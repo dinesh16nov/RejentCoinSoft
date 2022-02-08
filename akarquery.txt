@@ -1,0 +1,1859 @@
+
+
+
+--drop database db_LandmarkTraders
+create database db_LandmarkTraders
+
+go
+
+use db_LandmarkTraders
+
+go
+
+
+--drop table LoginDetail
+create table LoginDetail
+(
+Username nvarchar(100),
+Password nvarchar(100),
+Role nvarchar(100),
+Status nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+
+)
+
+go
+
+ 
+insert into LoginDetail (Username ,Password ,Role ,Status ,MentionBy ,MentionDate ) values ( 'Admin','a','Administrator','1','Admin',getdate() )
+go
+
+create  PROC sp_ChangeAdminPassword
+@Username nvarchar(100),
+@Oldpassword NVARCHAR(100),
+@NewPassword NVARCHAR(100)
+AS
+
+
+UPDATE logindetail SET Password=@NewPassword WHERE username=@username AND Password=@Oldpassword AND Role= 'Administrator'
+SELECT 't'
+GO
+
+Create PROC sp_UserLogin
+@username NVARCHAR(100),
+@password NVARCHAR(20)
+
+as
+
+
+SELECT ld.*,ud.username as username2,ud.Email,ud.Mobile FROM logindetail ld left join userdetail ud on ld.username=ud.userid
+WHERE ld.username=@username AND ld.Password=@password AND ld.Role='User' and ld.status='1'
+GO
+
+
+
+--drop table NewsMaster
+Create table NewsMaster
+(
+NewsId int,
+NewsDetail nvarchar(max),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+
+create proc sp_add_NewsMaster
+@NewsDetail nvarchar(100),
+@MentionBy nvarchar(100)
+as
+
+if(not exists (select * from NewsMaster where  NewsDetail=@NewsDetail))
+begin
+
+declare @NewsId  int
+SET @NewsId =(SELECT isnull(max(NewsId),0)+1 FROM NewsMaster)
+insert into NewsMaster (NewsId ,NewsDetail ,MentionBy ,MentionDate ) values (@NewsId ,@NewsDetail ,@MentionBy ,getdate() )
+
+select 't'
+end
+else
+begin
+select 'f'
+end
+GO
+
+
+
+
+
+
+--drop table BankMaster
+Create table BankMaster
+(
+BankId int,
+BankName nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+
+create proc sp_add_BankMaster
+@BankName nvarchar(100),
+@MentionBy nvarchar(100)
+as
+
+if(not exists (select * from BankMaster where  BankName=@BankName))
+begin
+
+declare @BankId  int
+SET @BankId =(SELECT isnull(max(BankId),0)+1 FROM BankMaster)
+insert into BankMaster (BankId ,BankName ,MentionBy ,MentionDate ) values (@BankId ,@BankName ,@MentionBy ,getdate() )
+
+select 't'
+end
+else
+begin
+select 'f'
+end
+GO
+
+
+
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (1, 'Bank Of Baorda', 'admin', '2015-12-07 15:48:38.947')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (2, 'HDFC Bank', 'admin', '2015-12-07 16:16:37.82')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (3, 'Allahabad Bank', 'admin', '2015-12-08 02:29:11.1')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (4, 'Andhra Bank', 'admin', '2015-12-08 02:29:21.753')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (5, 'Axis Bank', 'admin', '2015-12-08 02:29:31.783')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (6, 'Bank of Bahrain and Kuwait', 'admin', '2015-12-08 02:29:40.69')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (7, 'Bank of Baroda ', 'admin', '2015-12-08 02:29:56.22')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (8, 'Bank of India', 'admin', '2015-12-08 02:30:06.59')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (9, 'Bank of Maharashtra', 'admin', '2015-12-08 02:30:16.047')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (10, 'Canara Bank', 'admin', '2015-12-08 02:30:26.877')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (11, 'Central Bank of India', 'admin', '2015-12-08 02:30:38.297')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (12, 'City Union Bank', 'admin', '2015-12-08 02:30:46.307')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (13, 'Corporation Bank', 'admin', '2015-12-08 02:30:54.477')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (14, 'Deutsche Bank', 'admin', '2015-12-08 02:31:03.517')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (15, 'Development Credit Bank', 'admin', '2015-12-08 02:31:12.783')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (16, 'Dhanlaxmi Bank', 'admin', '2015-12-08 02:31:23.75')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (17, 'Federal Bank', 'admin', '2015-12-08 02:31:34.69')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (18, 'ICICI Bank', 'admin', '2015-12-08 02:32:02.407')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (19, 'IDBI Bank', 'admin', '2015-12-08 02:32:11.463')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (20, 'Indian Bank', 'admin', '2015-12-08 02:32:25.537')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (21, 'Indian Overseas Bank', 'admin', '2015-12-08 02:32:34.74')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (22, 'IndusInd Bank', 'admin', '2015-12-08 02:32:43.997')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (23, 'ING Vysya Bank', 'admin', '2015-12-08 02:33:08.717')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (24, 'Jammu and Kashmir Bank', 'admin', '2015-12-08 02:33:18.643')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (25, 'Karnataka Bank Ltd', 'admin', '2015-12-08 02:33:27.433')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (26, 'Karur Vysya Bank', 'admin', '2015-12-08 02:33:47.093')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (27, 'Kotak Bank', 'admin', '2015-12-08 02:33:57.48')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (28, 'Laxmi Vilas Bank', 'admin', '2015-12-08 02:34:09.503')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (29, 'Oriental Bank of Commerce', 'admin', '2015-12-08 02:34:18.493')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (30, 'Punjab National Bank', 'admin', '2015-12-08 02:34:29.68')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (31, 'Punjab & Sind Bank', 'admin', '2015-12-08 02:34:39.393')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (32, 'Shamrao Vitthal Co-operative Bank', 'admin', '2015-12-08 02:34:48.543')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (33, 'South Indian Bank', 'admin', '2015-12-08 02:35:01.25')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (34, 'State Bank of Bikaner & Jaipur', 'admin', '2015-12-08 02:35:12.543')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (35, 'State Bank of Hyderabad', 'admin', '2015-12-08 02:35:20.477')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (36, 'State Bank of India', 'admin', '2015-12-08 02:35:54.34')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (37, 'State Bank of Mysore', 'admin', '2015-12-08 02:36:04.703')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (38, 'State Bank of Patiala', 'admin', '2015-12-08 02:36:14.413')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (39, 'State Bank of Travancore', 'admin', '2015-12-08 02:36:23.573')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (40, 'Syndicate Bank', 'admin', '2015-12-08 02:36:34.933')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (41, 'Tamilnad Mercantile Bank Ltd.', 'admin', '2015-12-08 02:36:44.493')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (42, 'UCO Bank', 'admin', '2015-12-08 02:36:53.333')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (43, 'Union Bank of India', 'admin', '2015-12-08 02:37:03.103')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (44, 'United Bank of India', 'admin', '2015-12-08 02:37:13.433')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (45, 'Vijaya Bank', 'admin', '2015-12-08 02:37:31.64')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (46, 'Yes Bank Ltd', 'admin', '2015-12-08 02:37:41.55')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (47, 'Bandhan Bank', 'admin', '2015-12-10 02:55:28.903')
+GO
+
+INSERT INTO BankMaster (BankId, BankName, MentionBy, MentionDate)
+VALUES (48, 'Kashi Gomti Samyut Gramin Bank', 'admin', '2016-01-05 09:05:34.91')
+GO
+
+
+
+--drop table CountryMaster
+Create table CountryMaster
+(
+CountryId int,
+CountryName nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+insert into CountryMaster (CountryId ,CountryName ,MentionBy ,MentionDate ) values(1,'India' ,'admin' ,getdate())
+go
+
+
+create proc sp_add_CountryMaster
+@CountryName nvarchar(100),
+@MentionBy nvarchar(100)
+as
+
+if(not exists (select * from CountryMaster where  CountryName=@CountryName))
+begin
+
+declare @CountryId  int
+SET @CountryId =(SELECT isnull(max(CountryId),0)+1 FROM CountryMaster)
+insert into CountryMaster (CountryId ,CountryName ,MentionBy ,MentionDate ) values (@CountryId ,@CountryName ,@MentionBy ,getdate() )
+
+select 't'
+end
+else
+begin
+select 'f'
+end
+GO
+
+
+
+--drop table StateMaster
+Create table StateMaster
+(
+StateId int,
+CountryId int,
+StateName nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+
+--drop proc sp_add_State
+create proc sp_add_State
+@CountryId int,
+@StateName nvarchar(100),
+@MentionBy nvarchar(100)
+as
+
+if(not exists (select * from StateMaster where CountryId=@CountryId and StateName=@StateName))
+begin
+
+declare @StateId  int
+SET @StateId =(SELECT isnull(max(StateId),0)+1 FROM StateMaster)
+insert into StateMaster (StateId ,CountryId ,StateName ,MentionBy ,MentionDate ) values (@StateId ,@CountryId ,@StateName ,@MentionBy ,getdate() )
+
+select 't'
+end
+else
+begin
+select 'f'
+end
+go
+
+
+
+
+
+--drop table CityMaster
+Create table CityMaster
+(
+CityId int,
+StateId int,
+CityName nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+
+--drop proc sp_add_City
+create proc sp_add_City
+
+@StateId int,
+@CityName nvarchar(100),
+@MentionBy nvarchar(100)
+as
+
+if(not exists (select * from CityMaster where StateId=@StateId and CityName=@CityName))
+begin
+
+declare @CityId int
+SET @CityId  =(SELECT isnull(max(CityId),0)+1 FROM CityMaster)
+insert into CityMaster (CityId ,StateId ,CityName ,MentionBy ,MentionDate ) values (@CityId ,@StateId ,@CityName ,@MentionBy ,getdate() )
+
+select 't'
+end
+else
+begin
+select 'f'
+end
+go
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (1, 1, 'Varanasi', 'admin', '2016-06-16 00:14:08.07')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (2, 1, 'Agra', 'admin', '2016-06-21 13:28:52.013')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (3, 1, 'Allahabad', 'admin', '2016-06-21 13:29:16.567')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (4, 1, 'Aligarh', 'admin', '2016-06-21 13:29:44.957')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (5, 1, 'Ambedkar Nagar', 'admin', '2016-06-21 13:30:21.923')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (6, 1, 'Auraiya', 'admin', '2016-06-21 13:30:46.38')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (7, 1, 'Azamgarh', 'admin', '2016-06-21 13:31:09.127')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (8, 1, 'Barabanki', 'admin', '2016-06-21 13:31:35.05')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (9, 1, 'Badaun', 'admin', '2016-06-21 13:31:58.377')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (10, 1, 'Bahraich', 'admin', '2016-06-21 13:32:23.893')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (11, 1, 'Bijnor', 'admin', '2016-06-21 13:32:54.74')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (12, 1, 'Ballia', 'admin', '2016-06-21 13:33:17.223')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (13, 1, 'Balrampur', 'admin', '2016-06-21 13:33:50.177')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (14, 1, 'Bareilly', 'admin', '2016-06-21 13:34:10.143')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (15, 1, 'Basti', 'admin', '2016-06-21 13:34:35.163')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (16, 1, 'Chandauli', 'admin', '2016-06-21 13:35:05.36')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (17, 1, 'Deoria', 'admin', '2016-06-21 13:35:41.77')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (18, 1, 'Etawah', 'admin', '2016-06-21 13:36:02.847')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (19, 1, 'Firozabad', 'admin', '2016-06-21 13:36:26.657')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (20, 1, 'Farrukhabad', 'admin', '2016-06-21 13:36:48.253')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (21, 1, 'Fatehpur', 'admin', '2016-06-21 13:37:06.81')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (22, 1, 'Faizabad', 'admin', '2016-06-21 13:37:27.833')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (23, 1, 'Gautam Buddha Nagar', 'admin', '2016-06-21 13:37:54.643')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (24, 1, 'Gonda', 'admin', '2016-06-21 13:38:14.3')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (25, 1, 'Ghazipur', 'admin', '2016-06-21 13:38:33.78')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (26, 1, 'Gorkakhpur', 'admin', '2016-06-21 13:38:50.13')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (27, 1, 'Ghaziabad', 'admin', '2016-06-21 13:39:12.583')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (28, 1, 'Hamirpur', 'admin', '2016-06-21 13:39:39.8')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (29, 1, 'Hardoi', 'admin', '2016-06-21 13:39:56.63')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (30, 1, 'Hathras	', 'admin', '2016-06-21 13:40:14.143')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (31, 1, 'Jhansi', 'admin', '2016-06-21 13:40:43.723')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (32, 1, 'Jaunpur	', 'admin', '2016-06-21 13:41:12.943')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (33, 1, 'Akbarpur', 'admin', '2016-06-21 13:41:33.363')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (34, 1, 'Kannauj	', 'admin', '2016-06-21 13:41:55.38')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (35, 1, 'Kanpur	', 'admin', '2016-06-21 13:42:13.223')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (36, 1, 'Kaushambi', 'admin', '2016-06-21 13:42:40.397')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (37, 1, 'Kushinagar', 'admin', '2016-06-21 13:43:04.3')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (38, 1, 'Lalitpur	', 'admin', '2016-06-21 13:43:25.787')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (39, 1, 'Lakhimpur Kheri', 'admin', '2016-06-21 13:43:43.053')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (40, 1, 'Lucknow', 'admin', '2016-06-21 13:44:00.943')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (41, 1, 'Mau	', 'admin', '2016-06-21 13:44:20.787')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (42, 1, 'Meerut	', 'admin', '2016-06-21 13:44:37.743')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (43, 1, 'Maharajganj	', 'admin', '2016-06-21 13:44:54.867')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (44, 1, 'Mahoba', 'admin', '2016-06-21 13:45:14.177')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (45, 1, 'Mirzapur', 'admin', '2016-06-21 13:45:34.96')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (46, 1, 'Moradabad', 'admin', '2016-06-21 13:46:02.553')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (47, 1, 'Mathura', 'admin', '2016-06-21 13:46:26.49')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (48, 1, 'Muzaffarnagar	', 'admin', '2016-06-21 13:46:45.43')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (49, 1, 'Pratapgarh', 'admin', '2016-06-21 13:47:16.85')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (50, 1, 'Rampur', 'admin', '2016-06-21 13:47:39.59')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (51, 1, 'Rae Bareli', 'admin', '2016-06-21 13:47:58.12')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (52, 1, 'Saharanpur', 'admin', '2016-06-21 13:48:17.333')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (53, 1, 'Sitapur	', 'admin', '2016-06-21 13:48:36.66')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (54, 1, 'Siddharthnagar', 'admin', '2016-06-21 13:49:09.927')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (55, 1, 'Sonbhadra', 'admin', '2016-06-21 13:49:31.083')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (56, 1, 'Sant Ravidas Nagar	', 'admin', '2016-06-21 13:49:53.273')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (57, 1, 'Sultanpur', 'admin', '2016-06-21 13:50:23.553')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (58, 1, 'Unnao', 'admin', '2016-06-21 13:50:44.147')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (59, 1, 'Sant Kabir Nagar	', 'admin', '2016-06-21 13:51:17.71')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (60, 1, 'Noida', 'admin', '2016-06-21 13:51:46.023')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (61, 6, 'Araria', 'admin', '2016-07-05 02:13:48.003')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (62, 6, 'Arwal', 'admin', '2016-07-05 02:14:11.843')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (63, 6, 'Aurangabad', 'admin', '2016-07-05 02:14:40.327')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (64, 6, 'Banka', 'admin', '2016-07-05 02:15:05.92')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (65, 6, 'Begusarai', 'admin', '2016-07-05 02:15:45.03')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (66, 6, 'Bhabhua', 'admin', '2016-07-05 02:16:12.92')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (67, 6, 'Bhagalpur', 'admin', '2016-07-05 02:16:42.543')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (68, 6, 'Bhojpur', 'admin', '2016-07-05 02:17:28.5')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (69, 6, 'Buxar', 'admin', '2016-07-05 02:18:12.76')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (70, 6, 'Darbhanga', 'admin', '2016-07-05 02:19:17.89')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (71, 6, 'East Champaran', 'admin', '2016-07-05 02:21:20.093')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (72, 6, 'Gaya', 'admin', '2016-07-05 02:21:54.39')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (73, 1, 'Gopalganj', 'admin', '2016-07-05 02:22:29.03')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (74, 6, 'Gopalganj', 'admin', '2016-07-05 02:23:39.623')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (75, 6, 'Jamui', 'admin', '2016-07-05 02:24:27.773')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (76, 6, 'Jehanabad', 'admin', '2016-07-05 02:25:13.15')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (77, 6, 'Katihar', 'admin', '2016-07-05 02:26:26.553')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (78, 6, 'Khagaria', 'admin', '2016-07-05 02:27:07.577')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (79, 6, 'Kishanganj', 'admin', '2016-07-05 02:27:40.013')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (80, 6, 'Lakhisarai', 'admin', '2016-07-05 02:28:29.203')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (81, 6, 'Madhepura', 'admin', '2016-07-05 02:28:58.11')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (82, 6, 'Madhubani', 'admin', '2016-07-05 02:29:25.98')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (83, 6, 'Monghyr', 'admin', '2016-07-05 02:30:05.97')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (84, 6, 'Muzaffarpur', 'admin', '2016-07-05 02:30:37.64')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (85, 6, 'Nalanda', 'admin', '2016-07-05 02:31:41.22')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (86, 6, 'Nawada', 'admin', '2016-07-05 02:32:34.43')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (87, 6, 'Patna', 'admin', '2016-07-05 02:32:59.28')
+GO
+
+INSERT INTO CityMaster (CityId, StateId, CityName, MentionBy, MentionDate)
+VALUES (88, 22, 'MOHALI', 'admin', '2016-07-12 02:39:03.17')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (1, 1, 'Uttar Pradesh', 'admin', '2015-12-07 13:54:02.26')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (2, 1, 'Maharashtra', 'admin', '2015-12-07 16:14:01.483')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (3, 1, 'Andhra Pradesh', 'admin', '2015-12-08 02:22:42.58')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (4, 1, 'Arunachal Pradesh', 'admin', '2015-12-08 02:22:52.92')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (5, 1, 'Assam', 'admin', '2015-12-08 02:23:02.403')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (6, 1, 'Bihar', 'admin', '2015-12-08 02:23:11.85')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (7, 1, 'Chhattisgarh', 'admin', '2015-12-08 02:23:21.68')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (8, 1, 'Goa', 'admin', '2015-12-08 02:23:30.593')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (9, 1, 'Gujarat', 'admin', '2015-12-08 02:23:39.74')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (10, 1, 'Haryana', 'admin', '2015-12-08 02:23:49.79')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (11, 1, 'Himachal Pradesh', 'admin', '2015-12-08 02:24:05.043')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (12, 1, 'Jammu & Kashmir', 'admin', '2015-12-08 02:24:16.397')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (13, 1, 'Jharkhand', 'admin', '2015-12-08 02:24:27.013')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (14, 1, 'Karnataka', 'admin', '2015-12-08 02:24:37.593')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (15, 1, 'Kerala', 'admin', '2015-12-08 02:24:45.783')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (16, 1, 'Madhya Pradesh', 'admin', '2015-12-08 02:24:56.267')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (17, 1, 'Manipur', 'admin', '2015-12-08 02:25:06.693')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (18, 1, 'Meghalaya', 'admin', '2015-12-08 02:25:18.13')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (19, 1, 'Mizoram', 'admin', '2015-12-08 02:25:26.52')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (20, 1, 'Nagaland', 'admin', '2015-12-08 02:25:37.21')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (21, 1, 'Odisha (Orissa)', 'admin', '2015-12-08 02:26:00.977')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (22, 1, 'Punjab', 'admin', '2015-12-08 02:26:09.397')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (23, 1, 'Rajasthan', 'admin', '2015-12-08 02:26:21.79')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (24, 1, 'Sikkim', 'admin', '2015-12-08 02:26:29.993')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (25, 1, 'Tamil Nadu', 'admin', '2015-12-08 02:26:39.713')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (26, 1, 'Telangana', 'admin', '2015-12-08 02:26:54.017')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (27, 1, 'Tripura', 'admin', '2015-12-08 02:27:02.877')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (28, 1, 'Uttarakhand', 'admin', '2015-12-08 02:27:11.93')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (29, 1, 'West Bengal', 'admin', '2015-12-08 02:27:21.41')
+GO
+
+INSERT INTO StateMaster (StateId, CountryId, StateName, MentionBy, MentionDate)
+VALUES (30, 1, 'Delhi', 'admin', '2015-12-08 02:27:51.97')
+GO
+
+
+
+--drop table PlanMaster 
+create table PlanMaster 
+(
+PlanId int identity,
+PlanName nvarchar(100),
+Amount decimal(18,2),
+AmountDollar decimal(18,2),
+ROIAmount decimal(18,2), 
+ROIDays int,
+CappingAmount decimal(18,2),
+CappingAmountDollar decimal(18,2),
+MentionBy nvarchar(100),
+MentionDate datetime
+
+)
+
+go
+
+
+--drop proc sp_add_PlanMaster 
+create proc sp_add_PlanMaster 
+@PlanName nvarchar(100),
+@Amount decimal(18,2),
+@AmountDollar decimal(18,2),
+@ROIAmount decimal(18,2), 
+@ROIDays int,
+@CappingAmount decimal(18,2),
+@CappingAmountDollar decimal(18,2),
+@MentionBy nvarchar(100)
+
+
+as
+
+if(not exists(select planid from planmaster with (nolock) where planname=@planname))
+begin
+
+insert into planmaster (PlanName,Amount,AmountDollar,ROIAmount ,ROIDays,CappingAmount ,CappingAmountDollar,MentionBy ,MentionDate )
+values (@PlanName,@Amount,@AmountDollar,@ROIAmount ,@ROIDays,@CappingAmount ,@CappingAmountDollar,@MentionBy ,getdate())
+
+select 't'
+end
+else
+begin
+
+select 'f'
+end
+go
+
+
+--drop table EPinMaster 
+create table EPinMaster 
+(
+Id int,
+EPinNo nvarchar(100),
+GenerateUserId Nvarchar(200),
+UsedUserId Nvarchar(200),
+Amount decimal(18,2),
+EPinStatus nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime,
+PlanId int
+
+)
+
+go
+
+
+CREATE TABLE EPinTransferHistory
+	(
+	id          INT,
+	EPinNo      NVARCHAR (100),
+	UserIdFrom  NVARCHAR (100),
+	UserIdTo    NVARCHAR (100),
+	MentionBy   NVARCHAR (100),
+	mentionDate DATETIME
+	)
+GO
+
+
+
+--drop proc sp_add_EPinMaster
+create proc sp_add_EPinMaster
+
+@NoOfEPin int,
+@GenerateUserId Nvarchar(200),
+@Amount decimal(18,2),
+@MentionBy nvarchar(100),
+@PlanId int
+
+
+as
+
+BEGIN TRANSACTION;
+
+BEGIN TRY
+
+DECLARE @intFlag INT
+SET @intFlag = 1
+WHILE (@intFlag <=@NoOfEPin)
+BEGIN
+
+declare @EPinNo nvarchar(100)
+select  @EpinNo = substring( replace(NEWID(),'-','') ,0,6)
+
+
+declare @Id int
+SET @Id  =(SELECT isnull(max(Id),0)+1 FROM EPinMaster  )
+
+insert into EPinMaster (id,EPinNo,GenerateUserId,UsedUserId,Amount,EPinStatus,MentionBy,MentionDate,PlanId ) values 
+(@id,'TC'+@EPinNo,@GenerateUserId,null,@Amount,'Active',@MentionBy,getDate(),@PlanId )
+
+    SET @intFlag = @intFlag + 1
+END
+select 't'
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+    SELECT   ERROR_MESSAGE() ;
+
+       
+END CATCH;
+
+
+
+
+
+
+go
+
+
+
+
+--drop proc sp_add_EPinMasterUser
+create proc sp_add_EPinMasterUser
+
+@NoOfEPin int,
+@GenerateUserId Nvarchar(200),
+@Amount decimal(18,2),
+@MentionBy nvarchar(100),
+@PlanId  int
+
+
+as
+
+BEGIN TRANSACTION;
+
+BEGIN TRY
+
+DECLARE @totalamount DECIMAL(18,2)
+SET @totalamount=@NoOfEPin*@Amount
+IF(@totalamount<=(SELECT balanceamount FROM UserDetail WHERE userid=@GenerateUserId))
+BEGIN
+
+
+declare @transactionid int
+set @transactionid =(select isnull(max(TransactionId),0)+1 from TransactionDetail)
+
+DECLARE @intFlag INT
+SET @intFlag = 1
+WHILE (@intFlag <=@NoOfEPin)
+BEGIN
+
+declare @EPinNo nvarchar(100)
+select  @EpinNo = substring( replace(NEWID(),'-','') ,0,6)
+
+
+declare @Id int
+SET @Id  =(SELECT isnull(max(Id),0)+1 FROM EPinMaster  )
+
+insert into EPinMaster (id,EPinNo,GenerateUserId,UsedUserId,Amount,EPinStatus,MentionBy,MentionDate,PlanId ) values 
+(@id,'TC'+@EPinNo,@GenerateUserId,null,@Amount,'Active',@MentionBy,getDate(),@PlanId )
+
+
+
+INSERT INTO TransactionDetail (TransactionId, CrAmount, DrAmount, UserID, TransactionType, Remark, 
+MentionBy, MentionDate)
+VALUES (@transactionid, 0, @amount, @GenerateUserId, 'E-Pin Generate', 'E-Pin Generate '+'TC'+@EPinNo, @mentionby, getdate())
+
+
+
+update userdetail set balanceamount=isnull(balanceamount,0)-@amount where userid=@GenerateUserId
+
+
+
+    SET @intFlag = @intFlag + 1
+END
+select 't'
+END
+
+ELSE
+BEGIN
+SELECT 'f'
+end
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+    SELECT   ERROR_MESSAGE() ;
+
+       
+END CATCH;
+
+
+
+
+
+
+go
+
+
+
+
+
+
+--drop table TransactionDetail
+create table TransactionDetail
+(
+id INT IDENTITY,
+TransactionId int,
+CrAmount decimal(18,2),
+DrAmount decimal(18,2),
+UserID nvarchar(100),
+TransactionType nvarchar(100),
+Remark nvarchar(max),
+MentionBy nvarchar(100),
+MentionDate datetime
+)
+go
+
+
+
+
+CREATE TABLE SystemSetting
+(
+id INT IDENTITY,
+DirectIncome DECIMAL(18,2),
+MatchingIncome DECIMAL(18,2),
+UplineIncome DECIMAL(18,2),
+DownlineIncome DECIMAL(18,2)
+)
+GO
+
+INSERT INTO dbo.SystemSetting (DirectIncome, MatchingIncome, UplineIncome, DownlineIncome)
+VALUES (5, 10, 10, 10)go
+
+
+
+
+
+--drop table UserDetail
+CREATE TABLE UserDetail
+	(
+	id                  INT IDENTITY NOT NULL,
+	UserId              NVARCHAR (100),
+	SponserId           NVARCHAR (100),
+	UserName            NVARCHAR (100),
+	DateofBirth         DATETIME,
+	Gender              NVARCHAR (100),
+	Email               NVARCHAR (100),
+	Mobile              NVARCHAR (100),
+	NomineeName         NVARCHAR (100),
+	NomineeRelation     NVARCHAR (100),
+	Address             NVARCHAR (max),
+	CityName            NVARCHAR (100),
+	AreaName            NVARCHAR (200),
+	Pincode             NVARCHAR (100),
+	AccountHolderName   NVARCHAR (100),
+	AccountNo           NVARCHAR (100),
+	IFSCCode            NVARCHAR (100),
+	BankName            NVARCHAR (100),
+	BranchName          NVARCHAR (100),
+	PanNumber           NVARCHAR (100),
+	RegDate             DATETIME,
+	EPinNo              NVARCHAR (100),
+	ParentUserId        NVARCHAR (max),
+	StandingPosition    NVARCHAR (100),
+	DeleteStatus        NVARCHAR (100),
+	ActiveStatus        NVARCHAR (100),
+	MentionBy           NVARCHAR (100),
+	MentionDate         DATETIME,
+	balanceamount       DECIMAL (18, 2),
+	TransactionId       INT,
+	RegType             NVARCHAR (20),
+	OnlineTransactionId NVARCHAR (25),
+	ImageName           NVARCHAR (max),
+	StateId             INT,
+	paytmmobileno       NVARCHAR (25),
+BranchCode nvarchar(100)
+	)
+GO
+
+INSERT INTO UserDetail ( UserId, SponserId, UserName,ActiveStatus,balanceamount,BranchCode ,ParentUserId,StandingPosition )
+VALUES ( '1', '0', 'Land Mark Traders Inc', '1' ,0,'Admin','0','Left')
+go
+
+
+
+
+ALTER TABLE userdetail 
+ADD PlanID int
+go
+
+ALTER TABLE userdetail
+ADD LandMark NVARCHAR(500)
+
+GO
+
+
+
+
+--drop proc sp_add_UserDetail
+create proc sp_add_UserDetail
+@SponserId nvarchar(100),
+@UserName nvarchar(100),
+@DateofBirth datetime,
+@Gender nvarchar(100),
+@Email nvarchar(100),
+@Mobile nvarchar(100),
+@Address nvarchar(max),
+@CityName NVARCHAR(100),
+@AreaName nvarchar(200),
+@Pincode nvarchar(100),
+@MentionBy nvarchar(100),
+@Password nvarchar(20),
+@RegType nvarchar(20),
+@imagename NVARCHAR(max),
+@StateId INT,
+@PlanID INT,
+@LandMark NVARCHAR(500),
+@StandingPosition nvarchar(25),
+@EpinNo nvarchar(100)
+
+
+as
+BEGIN TRANSACTION;
+
+BEGIN TRY
+
+IF(isnull(@StandingPosition,'')!='')
+BEGIN
+IF(EXISTS(SELECT id FROM EPinMaster WHERE epinno=@epinno AND epinstatus='Active'))
+
+begin
+if(not exists(select * from userdetail where Mobile=@Mobile))
+begin
+
+
+DECLARE @SponserCount INT,@ParentUserId nvarchar(max)
+SET @sponserCount=(SELECT Count(id) FROM UserDetail WHERE parentuserid=@sponserid AND standingposition=@standingposition)
+IF(@SponserCount<1)
+BEGIN
+SET @ParentUserId=@sponserid
+
+END
+ELSE
+BEGIN
+
+
+DECLARE @parentmax int
+; WITH MyCTE
+AS ( SELECT id,userid,  StandingPosition, ParentUserId,1 AS userlevel
+FROM userdetail
+WHERE UserId =@sponserid
+UNION ALL
+SELECT UserDetail.id,userdetail.userid, UserDetail.StandingPosition, userdetail.ParentUserId ,MyCTE.userlevel+1 
+FROM userdetail  
+INNER JOIN MyCTE ON userdetail.parentuserid = MyCTE.userid 
+WHERE userdetail.userid !=@sponserid  AND UserDetail.StandingPosition=@StandingPosition
+ 
+)
+SELECT TOP 1 @ParentUserId=userid
+FROM MyCTE WHERE (SELECT count(id) FROM UserDetail WHERE userdetail.parentuserid=mycte.userid)<1 ORDER BY id
+ option ( MaxRecursion 0 ); 
+
+
+END
+
+
+declare @userid nvarchar(100)
+declare @Id int
+SET @Id   =(SELECT isnull(max(Id),0)+1 FROM UserDetail )
+SET @userid =  convert(VARCHAR, cast((900000* Rand() + 100000) as int ))
+
+DECLARE @DirectIncome DECIMAL(18,2),@EpinAmount DECIMAL(18,2),@DirectIncomeAmount DECIMAL(18,2)
+
+SET @DirectIncome=(SELECT TOP 1 directincome FROM SystemSetting WITH (nolock) ORDER BY id desc)
+SET @EpinAmount=(SELECT amount FROM EPinMaster WITH (nolock) WHERE EPinNo=@EpinNo)
+SET @DirectIncomeAmount=(@EpinAmount*@DirectIncome)/100
+DECLARE @transactionid INT
+SET @transactionid=(SELECT isnull(max(transactionid),0)+1 FROM TransactionDetail  )
+
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate)
+VALUES (@Transactionid,@DirectIncomeAmount,0,@sponserid,'DirectIncome','Direct Income For user '+@userid,@mentionBy, 
+getdate())
+UPDATE UserDetail SET balanceamount =(isnull(balanceamount,0)+@DirectIncomeAmount) WHERE UserId=@sponserid
+
+insert into userdetail (UserId,SponserId,UserName,DateofBirth,Gender,Email,Mobile,Address,
+CityName,AreaName,Pincode,RegDate,EPinNo,ParentUserId,StandingPosition,DeleteStatus,ActiveStatus,MentionBy,MentionDate,
+
+balanceamount,TransactionId,RegType,imagename,stateid,BranchCode,planid,LandMark )
+values (@UserId,@SponserId,@UserName,@DateofBirth,@Gender,@Email,@Mobile,@Address,
+@CityName,@AreaName,@Pincode,getdate(),@epinno,@parentuserId,@StandingPosition,'0','1',@MentionBy,getDate
+
+(),0,@transactionid,'Panel',@imagename,@stateid,'Subadmin',@planid,@LandMark)
+
+UPDATE EPinMaster SET UsedUserId =@UserId,EpinStatus='Used' WHERE EPinNo=@Epinno
+ 
+insert into LoginDetail (Username ,Password ,Role ,Status ,MentionBy ,MentionDate ) values ( 
+@userid,@Password,'User','1',@mentionby,getdate() )
+
+
+
+select @userid
+
+
+end
+else
+begin
+select 'f'
+END
+
+END
+ELSE
+BEGIN
+SELECT 'e'
+end
+END
+ELSE
+BEGIN
+SELECT 's'
+end
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+    SELECT   ERROR_MESSAGE() ;
+
+       
+END CATCH;
+GO
+
+
+INSERT INTO dbo.LoginDetail (Username, Password, Role, Status, MentionBy, MentionDate)
+VALUES ('1', '1', 'User', '1', 'admin', '2018-03-25 20:37:50.34')
+GO
+
+
+
+
+CREATE TABLE UserTopupDetail
+	(
+	id            INT IDENTITY NOT NULL,
+	UserId        NVARCHAR (100),
+	TransactionId INT,
+	TopupType     NVARCHAR (100),
+	EPinNo        NVARCHAR (100),
+	MentionBy     NVARCHAR (100),
+	MentionDate   DATETIME
+	)
+GO
+
+
+
+
+--drop proc sp_add_UserTopupDetail
+create proc sp_add_UserTopupDetail
+@userid NVARCHAR(100),
+@EpinNo NVARCHAR(100),
+@mentionBy NVARCHAR(100)
+
+AS
+
+IF(EXISTS (SELECT id FROM EPinMaster WHERE epinno=@epinno AND epinstatus='Active'))
+BEGIN
+
+IF( EXISTS (SELECT id FROM userdetail WHERE userid=@userid AND activestatus='0'))
+BEGIN
+
+UPDATE EPinMaster SET UsedUserId=@userid , EPinStatus='Used' WHERE EPinNo=@epinno
+UPDATE UserDetail SET ActiveStatus='1',epinno=@epinno WHERE UserId=@userid
+
+
+INSERT INTO usertopupdetail (UserId ,TransactionId,TopupType, EPinNo ,MentionBy ,	MentionDate)
+VALUES (@UserId ,null,'Topup', @EPinNo ,@MentionBy ,	getdate())
+
+SELECT 't'
+
+END
+ELSE
+BEGIN
+SELECT 'f'
+end
+
+END
+ELSE
+BEGIN
+SELECT 'e'
+end
+go
+
+
+
+CREATE TABLE ErrorLog
+(
+id INT IDENTITY,
+ProcedureName NVARCHAR(max),
+ErrorMessage NVARCHAR(max),
+EntryDate DATETIME
+
+)
+go
+
+
+
+--drop table WithdrawlRequest
+create table WithdrawlRequest
+(
+id int,
+UserId nvarchar(100),
+Amount decimal(18,2),
+Status nvarchar(100),
+ApproveDate datetime,
+TransactionId int,
+MentionBy nvarchar(100),
+MentionDate DATETIME,
+PaymentMode nvarchar(100),
+OnlineTransactionId nvarchar(50)
+
+)
+
+go
+
+
+
+
+--drop proc sp_addWithdrawlRequest
+create proc sp_addWithdrawlRequest
+@UserId nvarchar(100),
+
+@Amount decimal(18,2),
+@MentionBy nvarchar(100)
+
+as
+
+
+declare @Id int
+SET @Id  =(SELECT isnull(max(Id),0)+1 FROM WithdrawlRequest  )
+insert into WithdrawlRequest (id, userid,Amount ,Status ,MentionBy ,MentionDate ) values
+( @id,@userid, @Amount ,'Pending' ,@MentionBy ,getDate())
+select 't'
+
+go
+
+
+
+
+CREATE TABLE SendSms
+	(
+	Id            INT IDENTITY NOT NULL,
+	CreateDate    DATETIME,
+	Mobile        VARCHAR (50),
+	Result        NVARCHAR (max),
+	Api           VARCHAR (50),
+	Message       NVARCHAR (max),
+	Status        VARCHAR (max),
+	PortNo        VARCHAR (20),
+	TransactionID VARCHAR (max),
+	IdNo          VARCHAR (50),
+	Sts           VARCHAR (10)
+	)
+GO
+
+
+--drop table CallbackRequestDetail
+create table CallbackRequestDetail
+(
+id int identity,
+UserId nvarchar(100),
+MobileNo nvarchar(100),
+MentionBy nvarchar(100),
+MentionDate datetime
+
+)
+go
+
+--drop proc sp_add_CallbackRequestDetail
+create proc sp_add_CallbackRequestDetail
+
+@UserId nvarchar(100),
+@MobileNo nvarchar(100),
+@MentionBy nvarchar(100)
+
+as
+
+insert into CallbackRequestDetail (UserId ,MobileNo ,MentionBy ,MentionDate )
+values (@UserId ,@MobileNo ,@MentionBy ,getdate() )
+
+select 't'
+
+go
+
+
+
+
+create PROC sp_add_FundTransferAdmin
+@Userid NVARCHAR(100),
+@Amount DECIMAL(18,2),
+@mentionBy NVARCHAR(100)
+
+AS
+
+IF(EXISTS(SELECT id FROM UserDetail WITH (nolock) WHERE userid=@Userid))
+BEGIN
+
+DECLARE @transactionid INT,@SponserId NVARCHAR(100)
+SET @transactionid=(SELECT isnull(max(transactionid),0)+1 FROM TransactionDetail  )
+
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate)
+VALUES (@Transactionid,@Amount,0,@userid,'Fund Transfer','Fund Transfer By admin',@mentionBy, 
+getdate())
+
+
+UPDATE UserDetail SET balanceamount=isnull(balanceamount,0)+@amount WHERE userid=@userid
+
+
+SELECT 't'
+END
+ELSE
+BEGIN
+SELECT 'f'
+end
+GO
+
+
+
+CREATE TABLE WalletTransfer
+	(
+	id            INT IDENTITY NOT NULL,
+	FromUserId    NVARCHAR (100),
+	ToUserId      NVARCHAR (100),
+	Amount        DECIMAL (18, 2),
+	Remark        NVARCHAR (max),
+	TransactionId INT,
+	MentionBy     NVARCHAR (100),
+	MentionDate   DATETIME
+	)
+GO
+
+ALTER TABLE WalletTransfer
+ADD Status NVARCHAR(25)
+go
+
+ALTER TABLE WalletTransfer
+ADD AdminCharge DECIMAL(18,2),
+TotalAmount DECIMAL(18,2)
+go
+
+
+--drop proc sp_add_WalletTransferUser
+create proc sp_add_WalletTransferUser
+
+@FromUserId NVARCHAR(100),
+@ToUserId NVARCHAR(100),
+@Amount DECIMAL(18,2),
+@AdminCharge DECIMAL(18,2),
+@TotalAmount DECIMAL(18,2),
+@Remark NVARCHAR(max),
+@MentionBy NVARCHAR(100)
+AS
+
+IF(EXISTS(SELECT id FROM UserDetail WHERE userid=@FromUserId))
+BEGIN
+
+IF(EXISTS(SELECT id FROM UserDetail WHERE userid=@ToUserId))
+BEGIN
+
+DECLARE @BalanceAmount DECIMAL(18,2)
+SELECT @BalanceAmount=(SELECT isnull( balanceamount,0) FROM UserDetail WHERE UserId=@FromUserId)
+IF(@totalAmount<=@BalanceAmount)
+BEGIN
+
+DECLARE @TransactionId INT
+SET @TransactionId=(SELECT isnull(max(transactionid),0)+1 FROM TransactionDetail )
+
+INSERT INTO WalletTransfer (FromUserId,ToUserId,Amount,Remark,transactionid,MentionBy,MentionDate,Status,AdminCharge, TotalAmount)
+VALUES (@FromUserId,@ToUserId,@Amount,@Remark,@transactionid,@MentionBy,getDate(),'Success',@AdminCharge, @TotalAmount)
+
+INSERT INTO TransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate)
+VALUES (@TransactionId,@ToUserId,@amount,0,'Wallet Transfer',@remark,@MentionBy, 
+getdate())
+
+UPDATE UserDetail SET balanceamount=isnull(balanceamount,0)+@amount WHERE UserId=@ToUserId
+
+
+INSERT INTO TransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate)
+VALUES (@TransactionId,@FromUserId,0,@amount,'Wallet Transfer',@remark,@MentionBy, 
+getdate())
+
+INSERT INTO TransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate)
+VALUES (@TransactionId,@FromUserId,0,@AdminCharge,'Admin Charge','Admin Charge on Wallet Transfer',@MentionBy, 
+getdate())
+
+UPDATE UserDetail SET balanceamount=isnull(balanceamount,0)-@totalamount WHERE UserId=@FromUserId
+
+SELECT 't'
+END
+ELSE
+BEGIN
+SELECT 'b'
+end
+END
+ELSE
+BEGIN
+SELECT 'f'
+END 
+END 
+ELSE
+BEGIN 
+SELECT 'u'
+END
+GO
+
+--drop proc sp_add_WalletTransferAdmin
+create proc sp_add_WalletTransferAdmin
+
+@FromUserId NVARCHAR(100),
+@ToUserId NVARCHAR(100),
+@Amount DECIMAL(18,2),
+@Remark NVARCHAR(max),
+@MentionBy NVARCHAR(100)
+AS
+IF(EXISTS(SELECT id FROM UserDetail WHERE userid=@ToUserId))
+BEGIN
+
+DECLARE @TransactionId INT
+SET @TransactionId=(SELECT isnull(max(transactionid),0)+1 FROM TransactionDetail )
+
+INSERT INTO WalletTransfer (FromUserId,ToUserId,Amount,Remark,TransactionId,MentionBy,MentionDate,Status)
+VALUES (@FromUserId,@ToUserId,@Amount,@Remark,@TransactionId,@MentionBy,getDate(),'Success')
+
+INSERT INTO TransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate)
+VALUES (@TransactionId,@ToUserId,@amount,0,'Wallet Transfer',@remark,@MentionBy, 
+getdate())
+
+UPDATE UserDetail SET balanceamount=isnull(balanceamount,0)+@amount WHERE UserId=@ToUserId
+
+SELECT 't'
+END
+ELSE
+BEGIN
+SELECT 'f'
+END
+GO
+
+--drop table CompanyAccountDetail
+Create table CompanyAccountDetail
+(
+id INT IDENTITY,
+AccountNo NVARCHAR(25),
+AccountHolderName NVARCHAR(200),
+BankName NVARCHAR(200),
+IFSCCode NVARCHAR(200),
+BranchName NVARCHAR(200),
+MentionBy NVARCHAR(100),
+MentionDate DATETIME
+)
+
+GO
+
+
+
+--drop proc sp_add_CompanyAccountDetail
+CREATE PROC sp_add_CompanyAccountDetail
+
+@AccountNo NVARCHAR(25),
+@AccountHolderName NVARCHAR(200),
+@BankName NVARCHAR(200),
+@IFSCCode NVARCHAR(200),
+@BranchName NVARCHAR(200),
+@MentionBy NVARCHAR(100)
+
+AS
+
+IF(NOT EXISTS(SELECT id FROM CompanyAccountDetail WHERE AccountNo=@AccountNo ))
+BEGIN
+INSERT INTO CompanyAccountDetail (AccountNo,AccountHolderName,BankName,IFSCCode,BranchName,MentionBy,MentionDate)
+VALUES (@AccountNo,@AccountHolderName,@BankName,@IFSCCode,@BranchName,@MentionBy, getdate())
+SELECT 't'
+
+END
+ELSE
+BEGIN
+SELECT 'f'
+end
+GO
+
+
+--drop proc sp_edit_CompanyAccountDetail
+CREATE PROC sp_edit_CompanyAccountDetail
+@id INT,
+@AccountNo NVARCHAR(25),
+@AccountHolderName NVARCHAR(200),
+@BankName NVARCHAR(200),
+@IFSCCode NVARCHAR(200),
+@BranchName NVARCHAR(200)
+
+AS
+
+
+update CompanyAccountDetail SET AccountNo=@AccountNo,AccountHolderName=@AccountHolderName, 
+BankName= @BankName,IFSCCode=@IFSCCode,BranchName=@BranchName  WHERE id=@id
+SELECT 't'
+
+GO
+
+
+
+--drop table FundRequestDetail
+create table FundRequestDetail
+(
+id int identity,
+BankAccountId INT,
+UserId nvarchar(100),
+Amount decimal(18,2),
+Remark nvarchar(max),
+PaymentMode nvarchar(100),
+OnlineTransactionId nvarchar(100),
+ChequeNo nvarchar(100),
+MobileNoInBank nvarchar(20),
+Status nvarchar(100),
+TransactionId INT,
+MentionBy NVARCHAR(100),
+MentionDate DATETIME
+
+)
+
+go
+
+
+CREATE PROC sp_add_FundRequestDetail
+
+@BankAccountId INT,
+@UserId nvarchar(100),
+@Amount decimal(18,2),
+@Remark nvarchar(max),
+@PaymentMode nvarchar(100),
+@OnlineTransactionId nvarchar(100),
+@ChequeNo nvarchar(100),
+@MobileNoInBank nvarchar(20),
+@MentionBy NVARCHAR(100)
+
+AS
+
+INSERT INTO FundRequestDetail (BankAccountId ,UserId ,Amount ,Remark ,PaymentMode ,OnlineTransactionId ,
+ChequeNo ,MobileNoInBank ,Status ,TransactionId ,MentionBy ,MentionDate )
+VALUES (@BankAccountId ,@UserId ,@Amount ,@Remark ,@PaymentMode ,@OnlineTransactionId ,
+@ChequeNo ,@MobileNoInBank ,'Pending' ,null ,@MentionBy ,getdate())
+
+SELECT 't'
+GO
+
+
+CREATE PROC sp_update_FundRequest
+@id INT,
+@status NVARCHAR(100),
+@mentionby NVARCHAR(100)
+
+AS
+
+IF(EXISTS(SELECT id FROM FundRequestDetail WHERE id=@id AND status='Pending'))
+BEGIN
+UPDATE FundRequestDetail SET status =@status WHERE id=@id
+IF(@status='Approved')
+BEGIN
+DECLARE @TransactionId INT,@userid NVARCHAR(100),@amount DECIMAL(18,2)
+SET @TransactionId=(SELECT isnull( max(transactionid),0)+1 FROM TransactionDetail)
+SELECT @userid=userid,@amount=amount FROM FundRequestDetail WHERE id=@id
+
+INSERT INTO TransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate)
+VALUES (@TransactionId,@userid,@amount,0,'Fund Request','Fund Request Approved',@MentionBy, 
+getdate())
+UPDATE UserDetail SET balanceamount=isnull(balanceamount,0)+@amount WHERE UserId=@userid
+
+UPDATE FundRequestDetail SET transactionid =@transactionid WHERE id=@id
+
+END
+
+
+SELECT 't'
+END
+ELSE
+BEGIN
+SELECT 'f'
+END
+GO
+
+
+
+
+--drop  TABLE SponserHistoryDetail
+CREATE TABLE SponserHistoryDetail
+(
+id INT IDENTITY,
+UserId NVARCHAR(100),
+OldSponserId NVARCHAR(100),
+NewSponserId NVARCHAR(100),
+MentionBy NVARCHAR(100),
+MentionDate NVARCHAR(100)
+)
+GO
+
+
+create PROC sp_editSponser
+@UserId NVARCHAR(100),
+@OldSponserId NVARCHAR(100),
+@NewSponserId NVARCHAR(100),
+@MentionBy NVARCHAR(100)
+AS
+IF(EXISTS(SELECT id FROM UserDetail WHERE userid=@NewSponserId))
+BEGIN
+
+INSERT INTO SponserHistoryDetail (UserId,OldSponserId,NewSponserId,MentionBy,MentionDate)
+VALUES (@UserId,@OldSponserId,@NewSponserId,@MentionBy,getdate())
+UPDATE UserDetail SET SponserId=@NewSponserId WHERE UserId=@userid
+
+SELECT 't'
+END 
+ELSE
+BEGIN
+SELECT 'f'
+end
+GO
+
+USE [db_LandmarkTraders]
+GO
+/****** Object:  UserDefinedTableType [dbo].[dtROIPayment]    Script Date: 6/14/2018 2:21:18 PM ******/
+CREATE TYPE [dbo].[dtROIPayment] AS TABLE(
+	[id] [int] NULL,
+	[Mobile] [nvarchar](100) NULL,
+	[Amount] [decimal](18, 2) NULL,
+	[Userid] [nvarchar](100) NULL,
+	[CLosingDate] [datetime] NULL
+)
+GO
+
+

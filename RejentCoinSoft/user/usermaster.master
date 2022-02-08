@@ -1,0 +1,1331 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="usermaster.master.cs" Inherits="admin_MasterPage" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="assets/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon">
+    <title>Team Rijent</title>
+    <!-- Google font-->
+    <link rel="preconnect" href="../../../fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <!-- Font Awesome-->
+    <link rel="stylesheet" type="text/css" href="assets/css/fontawesome.css">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="assets/css/icofont.css">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="assets/css/themify.css">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="assets/css/flag-icon.css">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="assets/css/feather-icon.css">
+    <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/chartist.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/date-picker.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/prism.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vector-map.css">
+    <!-- Plugins css Ends-->
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link id="color" rel="stylesheet" href="assets/css/color-1.css" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
+    <style>
+        .active2 {
+            background: #1F1E29 none repeat scroll 0% 0% !important;
+            color: #FFF !important;
+        }
+
+        .GridPager a, .GridPager span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .GridPager a {
+            transition: all 0.3s ease-out 0s;
+        }
+
+            .GridPager a:hover {
+                background-color: #EEEEEE;
+            }
+
+        .GridPager span {
+            color: white;
+            z-index: 3;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+    </style>
+    <style>
+        body {
+        }
+
+            body .modal2 {
+                position: fixed;
+                z-index: 99999;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                background-color: white;
+                filter: alpha(opacity=60);
+                opacity: 0.6;
+                -moz-opacity: 0.8;
+                clear: both;
+                left: 0px;
+            }
+
+            body .center2 {
+                z-index: 100000;
+                margin: 200px auto;
+                padding: 10px;
+                width: 200px;
+                background-color: White;
+                border-radius: 10px;
+                filter: alpha(opacity=100);
+                opacity: 1;
+                -moz-opacity: 1;
+            }
+
+                body .center2 img {
+                    height: 150px;
+                    width: 200px;
+                }
+
+        .WrappedText {
+            word-break: break-all;
+            word-wrap: break-word;
+            width: 250px;
+        }
+    </style>
+          <style>
+              .label {
+                  padding: 2px;
+                  font-size: 10px;
+              }
+          </style>
+    <style>
+        .switch2 {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+            .switch2 input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: red;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #1BC703;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #1BC703;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+
+        .mt-4-5 {
+            margin-top: 1.8rem;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .icon-medall {
+            font-size: 20px;
+            float: right;
+            padding-right: 5px;
+        }
+
+        .renew-btn {
+            text-align: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0px;
+            position: relative;
+            background-color: #e10f0f;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            width: 160px;
+            text-align: center;
+            transition-duration: 0.4s;
+            overflow: hidden;
+            box-shadow: 0 4px 10px #193047;
+            border-radius: 4px;
+        }
+
+            .renew-btn:hover {
+                color: #fff;
+            }
+
+            .renew-btn:after {
+                content: "";
+                background: #e10f0f;
+                display: block;
+                position: absolute;
+                padding-top: 300%;
+                padding-left: 350%;
+                margin-left: -20px !important;
+                margin-top: -120%;
+                opacity: 0;
+                transition: all 0.8s
+            }
+
+            .renew-btn:active:after {
+                padding: 0;
+                margin: 0;
+                opacity: 1;
+                transition: 0s
+            }
+
+            .renew-btn:focus {
+                outline: 0;
+            }
+
+        @keyframes glowing {
+            0% {
+                background-color: #e10f0f;
+                box-shadow: 0 0 5px #e10f0f;
+            }
+
+            50% {
+                background-color: #e10f0f;
+                box-shadow: 0 0 10px #e10f0f;
+            }
+
+            100% {
+                background-color: #870303;
+                box-shadow: 0 0 5px #870303;
+            }
+        }
+
+        .renew-btn {
+            animation: glowing 1300ms infinite;
+        }
+    </style>
+    <script type="text/javascript">
+        function confirm_click() {
+            return confirm("Are you sure ?");
+        }
+
+    </script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body class="page-header-fixed " >
+
+    <form id="form1" runat="server">
+
+        <!-- Loader starts-->
+        <div class="loader-wrapper">
+            <div class="theme-loader">
+                <div class="loader-p"></div>
+            </div>
+        </div>
+        <!-- Loader ends-->
+        <!-- page-wrapper Start       -->
+        <div class="page-wrapper compact-wrapper" id="pageWrapper">
+            <!-- Page Header Start-->
+            <div class="page-main-header">
+                <div class="main-header-right row m-0">
+                    <div class="main-header-left">
+                        <div class="logo-wrapper">
+                            <a href="Dashboard.aspx">
+                                <img class="img-fluid" src="assets/images/logo.png" alt=""></a>
+                        </div>
+                        <div class="dark-logo-wrapper">
+                            <a href="Dashboard.aspx">
+                                <img class="img-fluid" src="assets/images/logo.png" alt=""></a>
+                        </div>
+                        <div class="toggle-sidebar"><i class="status_toggle middle" data-feather="align-center" id="sidebar-toggle"></i></div>
+                    </div>
+
+	<div class="left-menu-header col d-sm-none">
+            <div class=" ">
+		<div class="col-md-9 pull-left">
+			<p style="font-size:12px; margin-bottom: 5px;">External Wallet :</p>
+			<p style="font-size:12px; margin-bottom: 0rem;">$ <asp:Label ID="lblewalletbalance2" runat="server" Text="Label"></asp:Label></p>
+		</div>		
+		<div class="col-md-3 pull-right"><a href="FundRequestAdd.aspx" style="line-height: 45px;"><img class="img-fluid" src="assets/images/add-fund.svg" alt="" width="25"></a></div>
+			
+		
+		</div>
+          </div>
+                    
+                    <div class="nav-right col pull-right right-menu p-0">
+                        <ul class="nav-menus open">
+			<li class="">
+                               <asp:LinkButton ID="btnRenew" runat="server" OnClick="btnRenew_Click" class="renew-btn">Renew<!--<img class="img-fluid" src="assets/images/renew-button.png" alt="" height="25">--></asp:LinkButton>
+                            </li>
+			<li class="onhover p-2 mob-none">
+                                <a href="FundRequestAdd.aspx"><strong>External Wallet : $<asp:Label ID="lblewalletbalance" runat="server" Text="Label"></asp:Label> </strong> <img class="img-fluid" src="assets/images/add-fund.svg" alt="" width="30"></a>
+                            </li>
+                            
+                            <li class="onhover" id="licolor" runat="server">
+                                <div class="bookmark-box" id="divcolor" runat="server"><a onclick="onClickConnect();" style="color: white;"><i class="icon-wallet"></i></a>
+                                </div>
+                            </li>
+                              <li class="onhover-dropdown">
+                            <div class="notification-box"><i data-feather="message-square"></i><span class="dot-animated"></span></div>
+                            <ul class="notification-dropdown onhover-show-div">
+                          
+                                <li class="noti-primary">
+                                    <div class="media">
+                                        <span class="notification-bg bg-light-primary"><i data-feather="activity"></i></span>
+                                        <div class="media-body">
+                                            <a href="NewMessage.aspx"><p>New Message </p> </a>
+                                           
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="noti-secondary">
+                                   <div class="media">
+                                        <span class="notification-bg bg-light-primary"><i data-feather="activity"></i></span>
+                                        <div class="media-body">
+                                            <a href="Inbox.aspx"><p>Inbox</p> </a>
+                                           
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="noti-success">
+                                   <div class="media">
+                                        <span class="notification-bg bg-light-primary"><i data-feather="activity"></i></span>
+                                        <div class="media-body">
+                                            <a href="Sentbox.aspx"><p>Sentbox</p> </a>
+                                           
+                                        </div>
+                                    </div>
+                                </li>
+                              
+                            </ul>
+
+                        </li>
+                            <li class="onhover-dropdown">
+                                <div class="bookmark-box"><i class="fa fa-share"></i></div>
+                                <div class="bookmark-dropdown onhover-show-div">
+
+                                    <ul class="m-t-5">
+                                        <li class="add-to-bookmark ">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">Left&nbsp;&nbsp;&nbsp;</span>
+                                                <asp:Label ID="lblreferencelinkleft" Style="overflow-x: scroll; max-width: 300px;" CssClass="form-control" runat="server" Text="Label"></asp:Label>
+                                                <span class="input-group-text bg-secondary" title="Copy"><a onclick="copyToClipboardLeft(); return false;" style="color: white;"><i class="fa fa-copy"></i></a></span>
+                                                <span class="input-group-text bg-primary" title="Whatsapp">
+                                                    <asp:Literal ID="ltwhatsapplinkleft" runat="server"></asp:Literal></span>
+                                                <span class="input-group-text bg-info" title="Facebook">
+                                                    <asp:Literal ID="ltfacebookshareleft" runat="server"></asp:Literal></span>
+                                            </div>
+                                        </li>
+                                        <li class="add-to-bookmark">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text">Right</span>
+                                                <asp:Label ID="lblreferencelinkright" Style="overflow-x: scroll; max-width: 300px;" CssClass="form-control" runat="server" Text="Label"></asp:Label>
+                                                <span class="input-group-text bg-secondary" title="Copy"><a onclick="copyToClipboardRight(); return false;" style="color: white;"><i class="fa fa-copy"></i></a></span>
+                                                <span class="input-group-text bg-primary" title="Whatsapp">
+                                                    <asp:Literal ID="ltwhatsapplinkright" runat="server"></asp:Literal></span>
+                                                <span class="input-group-text bg-info" title="Facebook">
+                                                    <asp:Literal ID="ltfacebookshareright" runat="server"></asp:Literal></span>
+                                            </div>
+                                            <asp:Label ID="lbllinkleft" runat="server" Style="display: none;"  Text="Label"></asp:Label><asp:Label ID="lbllinkright" runat="server" Style="display: none;" Text="Label"></asp:Label>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="onhover-dropdown p-0">
+                                <button class="btn btn-primary-light" type="button"><a href="logout.aspx"><i data-feather="log-out"></i>Log out</a></button>
+                            </li>
+                        </ul>
+
+                        <ul  class="nav-right col pull-right right-menu p-0">
+                             <li id="add" runat="server"> 
+                                <asp:Label ID="lbladd1" runat="server"></asp:Label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-lg-none mobile-toggle pull-right w-auto"><i data-feather="more-horizontal"></i></div>
+                </div>
+            </div>
+            <!-- Page Header Ends-->
+            <!-- Page Body Start-->
+            <div class="page-body-wrapper sidebar-icon">
+                <!-- Page Sidebar Start-->
+                <header class="main-nav">
+                    <div class="sidebar-user text-center">
+                        <div class="row">
+							<div class="col-md-4">
+								<img class="img-90 rounded-circle" src="assets/images/dashboard/1.png" alt="">
+								<div class="badge-bottom">
+									<span class="badge badge-primary">
+									<asp:Label ID="lbluseridmaster2" runat="server" Text="Label"></asp:Label>
+</span>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<a href="user-profile.html" class="text-left">
+									<h6 class="mt-4-5 f-14 f-w-600" style="color: white;">
+										<asp:Label ID="lbluseridmaster" runat="server" Text="Label"></asp:Label>
+										<i class="icon-medall "></i>
+									</h6>
+								</a>
+								<p class="mb-0 font-roboto text-left"">
+									<asp:Label ID="lbllevelnamemaster" runat="server" Text="Label"></asp:Label>
+    
+									
+								</p>
+							</div>
+						</div>
+                        
+                        <ul>
+                            <li><span>
+                                <asp:Label ID="lbljoiningdate" runat="server" Text=""></asp:Label></span>
+                                <p>Joining Date</p>
+                            </li>
+                            <li><span>
+                                <asp:Label ID="lblactivationdate" runat="server" Text=""></asp:Label>( <asp:Label ID="lblactivationamount" runat="server" Text=""></asp:Label>$)</span>
+                                <p>Activate Date & Amt</p>
+                            </li>
+                            <!--<li><span>100$</span>
+                            <p>Package </p>
+                        </li>-->
+                        </ul>
+                    </div>
+                    <nav>
+                        <div class="main-navbar">
+                            <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+                            <div id="mainnav">
+                                <ul class="nav-menu custom-scrollbar">
+                                    <li class="back-btn">
+                                        <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+                                    </li>
+                                    <li class="sidebar-main-title">
+                                        <div>
+                                            <h6>Navigation</h6>
+                                        </div>
+                                    </li>
+                                    <li class=""><a class="nav-link menu-title link-nav" href="Dashboard.aspx"><i data-feather="home"></i><span>Dashboard</span></a></li>
+                                    <%--<li class=""><a class="nav-link menu-title link-nav" href="UserEdit.aspx"><i data-feather="edit"></i><span>Edit Profile</span></a></li>--%>
+                                       
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="layout"></i><span>User Management</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            <%--<li class="">
+                                            <a href="UserAdd.aspx"  class="slide-item">
+                                                <span >Add User</span>
+                                            </a>
+                                        </li>--%>
+
+                                          <%--  <li class=" ">
+                                                <a href="DownlineReport.aspx" class="slide-item">
+                                                    <span>Downline Report(Binary Wise)</span>
+                                                </a>
+                                            </li>--%> 
+                                            <li class=" ">
+                                                <a href="BinaryReport.aspx" class="slide-item">
+                                                    <span>Binary Report</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="DownlineReportSponserNew.aspx" class="slide-item">
+                                                    <span>Level Report</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="DirectDownlineReport.aspx" class="slide-item">
+                                                    <span>Direct Downline Report</span>
+                                                </a>
+                                            </li>
+                                              <li class=" ">
+                                                <a href="DownlineBusinessReport.aspx" class="slide-item">
+                                                    <span>Business Report</span>
+                                                </a>
+                                            </li>
+                                           <li class=" ">
+                                                <a href="SelfBonanzaReport.aspx" class="slide-item">
+                                                    <span>Self Bonanza Achievement Report</span>
+                                                </a>
+                                            </li>
+                                               <li class=" ">
+                                                <a href="TeamBonanzaReport.aspx" class="slide-item">
+                                                    <span>Team Bonanza Achievement Report</span>
+                                                </a>
+                                            </li>
+                                            <%-- <li class=" ">
+                                            <a href="AccountDetailEditRequestReport.aspx"  class="slide-item">
+                                                <span >Account Detail Edit Request</span>
+                                            </a>
+                                        </li>--%>
+                                        </ul>
+                                    </li>
+
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="box"></i><span>Payout</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            <li class=" ">
+                                                <a href="DirectIncomeReport.aspx" class="slide-item">
+
+                                                    <span>Direct Income </span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="BinaryIncomeReport.aspx" class="slide-item">
+
+                                                    <span>Matching Income </span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="LevelIncomeReport.aspx" class="slide-item">
+
+                                                    <span>Level Income </span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="ROIReport.aspx" class="slide-item">
+
+                                                    <span>Minting Bonus </span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="#" class="slide-item">
+                                                    <span>Staking Bonus </span>
+                                                </a>
+                                            </li>
+                                            <%--<li class=" ">
+                                                <a href="#" class="slide-item">
+                                                    <span>Career Bonus </span>
+                                                </a>
+                                            </li>--%>
+                                           <%-- <li class=" ">
+                                                <a href="#" class="slide-item">
+                                                    <span>Royalty Report</span>
+                                                </a>
+                                            </li>--%>
+                                             <li class=" ">
+                                                <a href="#" class="slide-item">
+                                                    <span>Level Reward</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="folder-plus"></i><span>Reports</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            <li class=" ">
+                                                <a href="TransactionReport.aspx" class="slide-item">
+                                                    <span>Internal Wallet History</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="TransactionReportEWallet.aspx" class="slide-item">
+                                                    <span>External Wallet History</span>
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="TransactionReportCoinWallet.aspx" class="slide-item">
+                                                    <span>Coin Wallet History</span>
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="CompletedBonanza.aspx" class="slide-item">
+                                                    <span>Complete Bonanza</span>
+                                                </a>
+                                            </li>
+                                             <li class=" " id="lipremiumwallet" runat="server">
+                                                <a href="#" class="slide-item">
+                                                    <span>Premium Wallet History</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="folder-plus"></i><span>Staking Wallet</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                          
+                                            <%-- <li class=" ">
+                                                <a href="StakingAddAuto.aspx" class="slide-item">
+                                                    <span>-</span>
+                                                </a>
+                                            </li>--%>
+                                            <li class=" ">
+                                                <a href="https://teamrijent.com/stacking/" target="_blank">
+                                                     <span>New Staking</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="StackingAdd.aspx" class="slide-item">
+                                                    <span>New Staking Request</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="StackingReport.aspx" class="slide-item">
+                                                    <span>Staking Report</span>
+                                                </a>
+                                            </li>
+                                            
+                                             <li class=" ">
+                                                <a href="StakingOld.aspx" class="slide-item">
+                                                    <span>Old Staking</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="cloud-drizzle"></i><span>Activation</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            <li class=" ">
+                                                <a href="UserTopup.aspx" class="slide-item">
+                                                    <span>User Topup</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="UserTopupReport.aspx" class="slide-item">
+                                                    <span>User Topup History</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="UserReTopup.aspx" class="slide-item">
+                                                    <span>Renew</span>
+                                                </a>
+                                            </li>
+                                              <li class=" ">
+                                                <a href="RenewalReport.aspx" class="slide-item">
+                                                    <span>Renewal History</span>
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="FundRequestAdd.aspx" class="slide-item">
+                                                    <span>Add Fund Request</span>
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="FundRequestReport.aspx" class="slide-item">
+                                                    <span>Fund Request History</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="cloud-drizzle"></i><span>Accounts</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                             <li class=" ">
+                                                <a href="SmartContractDeposit.aspx" class="slide-item">
+
+                                                    <span>Deposit(Smart Contract)</span>
+
+                                                </a>
+                                            </li>
+                                                <li class=" ">
+                                                <a href="SmartContractWithdrawal.aspx" class="slide-item">
+
+                                                    <span>Withdrawal(Smart Contract)</span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="WithdrawlRequstAdd.aspx" class="slide-item">
+
+                                                    <span>Withdrawal  (Manual)</span>
+
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="WithdrawlRequestReport.aspx" class="slide-item">
+
+                                                    <span>Withdrawal Request Report(Manual)</span>
+
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="WithdrawlReport.aspx" class="slide-item">
+
+                                                    <span>Withdrawal Report</span>
+
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%--<li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="cloud-drizzle"></i><span>Support</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            <li class=" ">
+                                                <a href="NewMessage.aspx" class="slide-item">
+                                                    <span>New Message</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="Inbox.aspx" class="slide-item">
+                                                    <span>Inbox</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="Sentbox.aspx" class="slide-item">
+                                                    <span>Sentbox</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>--%>
+                                    <%--<li class="dropdown"><a class="nav-link menu-title link-nav" href="CHangePassword.aspx"><i data-feather="command"></i><span>Change Password</span></a>
+
+                                    </li>--%>
+                                     <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="layout"></i><span>My Profile</span></a>
+                                        <ul class="nav-submenu menu-content">
+                                            
+                                            <li class=" ">
+                                                <a href="UserEdit.aspx" class="slide-item">
+                                                    <span>Edit Profile</span>
+                                                </a>
+                                            </li>
+                                             <li class=" ">
+                                                <a href="MyTopup.aspx" class="slide-item">
+                                                    <span>My Topup</span>
+                                                </a>
+                                            </li>
+                                              <li class=" ">
+                                                <a href="MyRenewal.aspx" class="slide-item">
+                                                    <span>My Renewal</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="#" class="slide-item">
+                                                    <span>2FA</span>
+                                                </a>
+                                            </li>
+                                            <li class=" ">
+                                                <a href="CHangePassword.aspx" class="slide-item">
+                                                    <span>CHange Password</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown"><a class="nav-link menu-title link-nav" href="logout.aspx"><i data-feather="log-out"></i><span>Logout</span></a>
+
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+                        </div>
+                    </nav>
+                </header>
+                <!-- Page Sidebar Ends-->
+                <div class="page-body">
+
+
+
+
+                    <!-- Container-fluid starts-->
+                    <div class="container-fluid dashboard-default-sec">
+                        <div class="page-header">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <asp:ContentPlaceHolder ID="contentHeader" runat="server">
+                                    </asp:ContentPlaceHolder>
+
+                                </div>
+                                 <div class="col-sm-10 alert alert-primary">
+                                     <div class="row">
+                                          <div class="col-sm-1 ">
+                                      News :
+                                     </div>
+                                      <div class="col-sm-11 ">
+                                     <marquee direction="left"><asp:Literal ID="ltnews" runat="server"></asp:Literal></marquee>
+                                     </div>
+                                     </div>
+                                     </div>
+                                
+
+                            </div>
+                        </div>
+                        <asp:ContentPlaceHolder ID="contentData" runat="server">
+                       
+                        </asp:ContentPlaceHolder>
+                    </div>
+                    <!-- Container-fluid Ends-->
+                </div>
+                <!-- footer start-->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 footer-copyright">
+                                <p class="mb-0">Copyright 2021-22 © Team Rijent All rights reserved.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="pull-right mb-0">Hand crafted & made with <i class="fa fa-heart font-secondary"></i></p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <!-- latest jquery-->
+        <script src="assets/js/jquery-3.5.1.min.js"></script>
+        <!-- feather icon js-->
+        <script src="assets/js/icons/feather-icon/feather.min.js"></script>
+        <script src="assets/js/icons/feather-icon/feather-icon.js"></script>
+        <!-- Sidebar jquery-->
+        <script src="assets/js/sidebar-menu.js"></script>
+        <script src="assets/js/config.js"></script>
+        <!-- Bootstrap js-->
+        <script src="assets/js/bootstrap/popper.min.js"></script>
+        <script src="assets/js/bootstrap/bootstrap.min.js"></script>
+        <!-- Plugins JS start-->
+        <script src="assets/js/chart/chartist/chartist.js"></script>
+        <script src="assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
+        <script src="assets/js/chart/knob/knob.min.js"></script>
+        <script src="assets/js/chart/knob/knob-chart.js"></script>
+        <script src="assets/js/chart/apex-chart/apex-chart.js"></script>
+        <script src="assets/js/chart/apex-chart/stock-prices.js"></script>
+        <script src="assets/js/prism/prism.min.js"></script>
+        <script src="assets/js/clipboard/clipboard.min.js"></script>
+        <script src="assets/js/counter/jquery.waypoints.min.js"></script>
+        <script src="assets/js/counter/jquery.counterup.min.js"></script>
+        <script src="assets/js/counter/counter-custom.js"></script>
+        <script src="assets/js/custom-card/custom-card.js"></script>
+        <script src="assets/js/notify/bootstrap-notify.min.js"></script>
+        <script src="assets/js/vector-map/jquery-jvectormap-2.0.2.min.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-us-aea-en.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-uk-mill-en.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-au-mill.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-chicago-mill-en.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-in-mill.js"></script>
+        <script src="assets/js/vector-map/map/jquery-jvectormap-asia-mill.js"></script>
+        <script src="assets/js/dashboard/default.js"></script>
+        <script src="assets/js/notify/index.js"></script>
+        <script src="assets/js/datepicker/date-picker/datepicker.js"></script>
+        <script src="assets/js/datepicker/date-picker/datepicker.en.js"></script>
+        <script src="assets/js/datepicker/date-picker/datepicker.custom.js"></script>
+        <!-- Plugins JS Ends-->
+        <!-- Theme js-->
+        <script src="assets/js/script.js"></script>
+        <%--<script src="assets/js/theme-customizer/customizer.js"></script>--%>
+        <script type="text/javascript" src="assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+        <script src="Rijent.js"></script>
+        <script>
+            Sys.Application.add_load(LoadHandler);
+            function LoadHandler() {
+                $('.datepicker-here').datepicker();
+                //$('.datepicker-here').datetimepicker({
+                //    language: 'en',
+                //    weekStart: 1,
+                //    todayBtn: 1,
+                //    autoclose: 1,
+                //    todayHighlight: 1,
+                //    startView: 2,
+                //    minView: 2,
+                //    forceParse: 0,
+                //    format: 'dd/mm/yyyy',
+                //});
+            }
+        </script>
+        <script type="text/javascript">
+
+            //$('.datepicker-here').datetimepicker({
+            //    language: 'en',
+            //    weekStart: 1,
+            //    todayBtn: 1,
+            //    autoclose: 1,
+            //    todayHighlight: 1,
+            //    startView: 2,
+            //    minView: 2,
+            //    forceParse: 0,
+            //    format: 'dd/mm/yyyy',
+            //});
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode > 31 && (charCode < 45 || charCode > 57)) {
+                    return false;
+                }
+                return true;
+            }
+            $(function () {
+
+                var url = window.location.pathname;
+                var pagename = url.substring(url.lastIndexOf('/') + 1, url.length);
+                //    alert(pagename);
+                $('#nav2 li').each(function (i) {
+
+                    if ($(this).find('a').attr('href') == pagename) {
+                        $(this).addClass('active');
+                        $(this).closest('ul').closest('li').addClass('active open');
+                    }
+
+                });
+
+            });
+        </script>
+        <link href="assets/js/toastr.css" rel="stylesheet" />
+        <script src="assets/js/toastr.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.5/web3.min.js"></script>
+        <script>
+            function copyToClipboardLeft() {
+                var element = document.getElementById("ctl00_lbllinkleft")
+
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($(element).text()).select();
+                document.execCommand("copy");
+                $temp.remove();
+                // alert('Link Copied');
+                toastr.success('Success', 'Link Copied');
+                return false
+            }
+            function copyToClipboardRight() {
+                var element = document.getElementById("ctl00_lbllinkright")
+
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($(element).text()).select();
+                document.execCommand("copy");
+                $temp.remove();
+                // alert('Link Copied');
+                toastr.success('Success', 'Link Copied');
+                return false
+            }
+        </script>
+        <script>
+
+            const onClickConnect = async () => {
+                try {
+                    //Will Start the MetaMask Extension 
+                    wallet_address = await ethereum.request({ method: 'eth_requestAccounts' });
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    var formData = "wallet_address=" + wallet_address;
+                    $.ajax({
+                        //url: "https://teamrijent.com/user/updateWallet",
+                        url: '../Webservices/SmartContract.asmx/UpdateWalletAddress',
+                        data: "{ 'prefix': '" + wallet_address + "','userid': '" + '<%=Session["UserId"] %>' + "'}",
+                        dataType: "json",
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        success: function (result) {
+                            //alert(result.d);
+                            toastr.success('Success', result.d);
+                            //alert(JSON.stringify(result));
+                            ///window.location.href = "https://teamrijent.com/user/index";
+                        }
+                    });
+                    // alert(formData);
+
+
+                } catch (error) {
+                    //alert("Please Login on Metamask Google Chrome Extensions");
+                    toastr.error('Error', 'Please Login on Metamask Google Chrome Extensions');
+                }
+            };
+
+
+
+            const deposit = async (depositeAmt, wallet_address) => {
+                const { ethereum } = window;
+
+                accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                var userAddr = accounts[0];
+
+                var chainId = await ethereum.request({ method: 'eth_chainId' });
+
+                if (userAddr.toLowerCase() != wallet_address.toLowerCase()) {
+                    alert("Please select connected wallet address for deposit" + userAddr);
+                    return false;
+                }
+
+                //chainId = parseInt(chainId, 56);
+
+                if (chainId != 56) {
+                    alert("Please select Binance Smart Chain");
+                    return false;
+                }
+                var weiAmt = 1000000000000000000 * depositeAmt;
+                var hexaDecimal = "0x" + weiAmt.toString(16);
+
+                //var web3 = new Web3(Web3.givenProvider);
+                var web3 = new Web3(window.web3.currentProvider);
+
+                var Token = new web3.eth.Contract(token_abi, token_addr);
+                var Trade = new web3.eth.Contract(contract_abi, contract_addr);
+
+                //alert(userAddr);
+                //alert(contract_addr);
+
+                await Token.methods.allowance(userAddr, contract_addr).call({ from: userAddr }, function (err, result) {
+                    //console.log(result);
+                    if (result == 0) {
+                        alert("Insufficient allowance");
+                        return false;
+                    }
+                    else {
+                        // alert(weiAmt);
+                        Trade.methods.deposit(hexaDecimal).send({ from: userAddr }, function (err, result) {
+
+                            if (err !== null) {
+                                alert("Some error Occurs. Transaction failed.");
+                            }
+                            else {
+                                formData = "wallet_address=" + wallet_address + "&depositeAmt=" + depositeAmt + "&trans_id=" + result;
+                                $.ajax({
+                                    //url: "https://teamrijent.com/user/depositeAmt",
+                                    url: '../Webservices/SmartContract.asmx/DepositCoin',
+                                    data: "{ 'Amount': '" + depositeAmt + "','userid': '" + '<%=Session["UserId"] %>' + "','FromWalletAddress': '" + wallet_address + "','ToWalletAddress': '" + contract_addr + "','ReferenceId': '" + result + "'}",
+                        //data: "{ 'userid': '" + <%=Session["UserId"] %>  + "'}",
+                                    dataType: "json",
+                                    type: 'POST',
+                                    contentType: "application/json; charset=utf-8",
+                                    success: function (result) {
+                                        //alert(result.msg);
+                                        if (result.type != 'error') {
+                                            //window.location.href = "https://teamrijent.com/user/index";  
+                                            toastr.success('Success', result.d);
+                                        } else {
+
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    }
+                });
+
+
+            }
+
+            const approve = async (wallet_address) => {
+                accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                var userAddr = accounts[0];
+                //var userAddr = wallet_address;
+                //var web3 = new Web3(Web3.givenProvider);
+                var web3 = new Web3(window.web3.currentProvider);
+                var Token = new web3.eth.Contract(token_abi, token_addr);
+
+                var amt = 350000000000000000000000000;
+                //var amt = depositeAmt;
+                var amount = "0x" + amt.toString(16);
+
+                await Token.methods.approve(contract_addr, amount).send({ from: userAddr }, function (err, result) {
+                    if (err !== null) {
+                        //$.toast({
+                        // 	heading: 'Error',
+                        // 	text: err,
+                        //	icon: 'error',
+                        //	hideAfter: 15000,
+                        // 	showHideTransition : 'slide'  // It can be plain, fade or slide
+                        // });
+                        toastr.error('Error', err);
+                    }
+                    else {
+
+                        $.ajax({
+                            //url: "https://teamrijent.com/user/updateWallet",
+                            url: '../Webservices/SmartContract.asmx/Approve',
+                            data: "{ 'userid': '" + '<%=Session["UserId"] %>' + "'}",
+                            dataType: "json",
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+                            success: function (result) {
+                                //alert(result.d);
+                                //toastr.success('Success', result.d);
+                                setTimeout(function () { location.reload(); }, 5000);
+                                //alert(JSON.stringify(result));
+                                ///window.location.href = "https://teamrijent.com/user/index";
+                            }
+                        });
+
+
+                    }
+                })
+            }
+
+            const approveBusdold = async () => {
+                accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                var userAddr = accounts[0];
+                $("#show_wall_addr").html(accounts[0]);
+                //var web3 = new Web3(Web3.givenProvider);
+                var web3 = new Web3(window.web3.currentProvider);
+                var Token = new web3.eth.Contract(busd_abi, busd_addr);
+
+                var amt = 350000000000000000000000000;
+                var amount = "0x" + amt.toString(16);
+
+                //await Token.methods.approve(deposit_addr, amount).send({from:userAddr},function(err,result){
+                await Token.methods.approve(idoContractAddr, amount).send({ from: userAddr }, function (err, result) {
+                    if (err !== null) {
+                        $.toast({
+                            heading: 'Error',
+                            text: err,
+                            icon: 'error',
+                            hideAfter: 15000,
+                            showHideTransition: 'slide'  // It can be plain, fade or slide
+                        });
+
+
+                    }
+                    else {
+                        //var ethShowLink = baseExplorerUrl+"tx/"+result;
+                        //$.toast({
+                        //           heading: 'Success',
+                        //           text: "View On <a target='_blank' href='"+ethShowLink+"' >BlockChain</a>",
+                        //           icon: 'success',
+                        //           hideAfter: 15000,
+                        //           showHideTransition : 'slide'  // It can be plain, fade or slide
+                        //       });
+                        $.ajax({
+                            //url: "https://teamrijent.com/user/updateWallet",
+                            url: '../Webservices/SmartContract.asmx/ApproveStaking',
+                            data: "{ 'userid': '" + '<%=Session["UserId"] %>' + "'}",
+                            dataType: "json",
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+                            success: function (result) {
+                                //alert(result.d);
+                                //toastr.success('Success', result.d);
+                                setTimeout(function () { location.reload(); }, 5000);
+                                //alert(JSON.stringify(result));
+                                ///window.location.href = "https://teamrijent.com/user/index";
+                            }
+                        });
+
+
+                        // setTimeout(function(){ location.reload(); },15000);
+                    }
+                })
+            }
+            const approveBusd = async () => {
+                accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                var userAddr = accounts[0];
+                $("#show_wall_addr").html(accounts[0]);
+                //var web3 = new Web3(Web3.givenProvider);
+                var web3 = new Web3(window.web3.currentProvider);
+                var Token = new web3.eth.Contract(busd_abi, busd_addr);
+
+                var amt = 350000000000000000000000000;
+                var amount = "0x" + amt.toString(16);
+
+                //await Token.methods.approve(deposit_addr, amount).send({from:userAddr},function(err,result){
+                await Token.methods.approve(idoContractAddr, amount).send({ from: userAddr }, function (err, result) {
+                    if (err !== null) {
+                        $.toast({
+                            heading: 'Error',
+                            text: err,
+                            icon: 'error',
+                            hideAfter: 15000,
+                            showHideTransition: 'slide'  // It can be plain, fade or slide
+                        });
+
+
+                    }
+                    else {
+                        //var ethShowLink = baseExplorerUrl+"tx/"+result;
+                        //$.toast({
+                        //           heading: 'Success',
+                        //           text: "View On <a target='_blank' href='"+ethShowLink+"' >BlockChain</a>",
+                        //           icon: 'success',
+                        //           hideAfter: 15000,
+                        //           showHideTransition : 'slide'  // It can be plain, fade or slide
+                        //       });
+                        $.ajax({
+                            //url: "https://teamrijent.com/user/updateWallet",
+                            url: '../Webservices/SmartContract.asmx/ApproveStaking',
+                            data: "{ 'userid': '" + '<%=Session["UserId"] %>' + "'}",
+                            dataType: "json",
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+                            success: function (result) {
+                                //alert(result.d);
+                                //toastr.success('Success', result.d);
+                                setTimeout(function () { location.reload(); }, 5000);
+                                //alert(JSON.stringify(result));
+                                ///window.location.href = "https://teamrijent.com/user/index";
+                            }
+                        });
+
+
+                        // setTimeout(function(){ location.reload(); },15000);
+                    }
+                })
+            }
+
+            const withdraw = async (withdrwalAmt, wallet, wallettype, tranid, adminprivatekey) => {
+
+                accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                var userAddr = accounts[0];
+                var chainId = await ethereum.request({ method: 'eth_chainId' });
+
+                //chainId = parseInt(chainId, 56);
+
+                if (chainId != 56) {
+                    alert("Please select Binance Smart Chain");
+                    return false;
+                }
+
+                //var web3 = new Web3(Web3.givenProvider);
+                var web3 = new Web3(window.web3.currentProvider);
+                var Trade = new web3.eth.Contract(contract_abi, contract_addr);
+                await Trade.methods.withdraw().send({ from: userAddr }, function (err, result) {
+                    console.log(result);
+                    if (err !== null) {
+                        //alert("Some error occured");
+                      <%--  url: '../Webservices/SmartContract.asmx/WithdrawCoinFail',
+                            data: "{ 'userid': '" + '<%=Session["UserId"] %>' + "','TransactionId': '" + tranid + "'}",
+                                dataType: "json",
+                                    type: 'POST',
+                                        contentType: "application/json; charset=utf-8",
+
+                                            success: function (res) {
+                                                alert("Some error occured");
+                                                toastr.success('Success', result.d);
+                                            }--%>
+
+                        $.ajax({
+                            //url: "/user/metaWithdrawal",
+                            //data:{  
+                            //"trans_id":result,
+                            //"withdrwalAmt":withdrwalAmt, 
+                            //"wallet":wallet 
+                            //},
+                            //type: 'POST',
+                            url: '../Webservices/SmartContract.asmx/WithdrawCoinFail',
+                            data: "{ 'userid': '" + '<%=Session["UserId"] %>' + "','TransactionId': '" + tranid + "'}",
+                             dataType: "json",
+                             type: 'POST',
+                             contentType: "application/json; charset=utf-8",
+
+                             success: function (res) {
+                                 //alert(res.msg);
+                                 //window.location.href = "/user/index";
+                                 alert("Some error occured");
+                             }
+                         });
+                    }
+                    else {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+
+                        $.ajax({
+                            //url: "/user/metaWithdrawal",
+                            //data:{  
+                            //"trans_id":result,
+                            //"withdrwalAmt":withdrwalAmt, 
+                            //"wallet":wallet 
+                            //},
+                            //type: 'POST',
+                            url: '../Webservices/SmartContract.asmx/WithdrawCoin',
+                            data: "{ 'Amount': '" + withdrwalAmt + "','userid': '" + '<%=Session["UserId"] %>' + "','FromWalletAddress': '" + wallet + "','ToWalletAddress': '" + contract_addr + "','ReferenceId': '" + result + "','WalletType': '" + wallettype + "','TransactionId': '" + tranid + "','AdminPrivateKey': '" + adminprivatekey + "'}",
+                            dataType: "json",
+                            type: 'POST',
+                            contentType: "application/json; charset=utf-8",
+
+                            success: function (res) {
+                                //alert(res.msg);
+                                //window.location.href = "/user/index";
+                                toastr.success('Success', res.d);
+                            }
+                        });
+                        //setTimeout(function(){ location.reload(); },15000);
+                    }
+
+                });
+
+            }
+
+
+            function testpost() {
+                $.ajax({
+                    //url: "https://teamrijent.com/user/depositeAmt",
+                    url: '../Webservices/SmartContract.asmx/DepositCoin',
+                    //data: "{ 'Amount': '" + depositeAmt  + "','userid': '" + '<%=Session["UserId"] %>'  + "','FromWalletAddress': '" + wallet_address  + "','ToWalletAddress': '" + contract_addr  + "','ReferenceId': '" + result  + "'}",
+                    data: "{ 'userid': '" + <%=Session["UserId"] %>  + "'}",
+                    dataType: "json",
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+
+                    success: function (result) {
+                        alert(result.msg);
+                        if (result.type != 'error') {
+                            //window.location.href = "https://teamrijent.com/user/index";  
+                            toastr.success('Success', result.d);
+                        } else {
+
+                        }
+                    }
+                })
+            }
+
+
+            window.addEventListener('DOMContentLoaded', initialize)
+        </script>
+
+        <asp:ContentPlaceHolder ID="contentScript" runat="server">
+        </asp:ContentPlaceHolder>
+
+    </form>
+</body>
+</html>

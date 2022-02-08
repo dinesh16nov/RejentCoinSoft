@@ -1,0 +1,165 @@
+ALTER pROC sp_generatePrincipalCashback
+@ClosingDate DATETIME
+
+
+as
+BEGIN TRANSACTION;
+
+BEGIN TRY
+IF(NOT EXISTS(SELECT * FROM PrincipalCashbackDateDetail WITH (nolock) WHERE convert(DATE,closingdate)= convert(DATE,@closingdate)))
+begin
+
+DECLARE @MentionBy NVARCHAR(100)
+SET @MentionBy ='admin'
+
+
+
+--==================================roi achievement start==============================
+
+SET NOCOUNT ON
+DECLARE @userid INT,@planid INT,@topupdate DATETIME,@planamount DECIMAL(18,2)
+DECLARE cur_roi1 CURSOR
+STATIC FOR 
+--and ud.PlanId IN (1,9) 
+SELECT  ud.userid,ud.PlanId,ud.MentionDate,pm.CalculationAmount FROM UserTopupDetail ud WITH (nolock)  LEFT JOIN userdetail ud2 WITH (nolock) ON ud2.UserId=ud.UserId LEFT JOIN planmaster pm WITH (nolock) ON pm.PlanId=ud.PlanId WHERE convert(DATE,ud.mentiondate)<=convert(DATE,@closingdate) and convert(DATE,ud.mentiondate)>=convert(DATE,'01/25/2021')   AND isnull(ud2.IsDummyData,'0')='0' AND pm.CalculationAmount>0
+/*union
+SELECT  ud.userid,ud.PlanId,ud.MentionDate FROM usertopupdetailhistory ud WITH (nolock) LEFT JOIN userdetail ud2 WITH (nolock) ON ud2.UserId=ud.UserId WHERE convert(DATE,ud.mentiondate)<=convert(DATE,@closingdate)   AND isnull(ud2.IsDummyData,'0')='0' AND isnull(ud2.IsDirectROI,'1')='1'*/
+--and ud.PlanId IN (1,9) 
+ 
+
+OPEN cur_roi1
+ BEGIN 
+ FETCH NEXT FROM cur_roi1 INTO @userid,@planid,@topupdate,@planamount
+ WHILE @@Fetch_status = 0
+ BEGIN
+ 
+
+DECLARE @LDirectCount INT,@RDirectCount INT
+declare @Ltemp TABLE (userid INT)
+declare @Rtemp table (userid INT)
+DECLARE @LUserId INT,@RUserId INT,@LCount INT,@RCount INT,@Lbusiness DECIMAL(18,2),@RBusiness DECIMAL(18,2)
+
+SET @luserid=(SELECT userid FROM UserDetail WITH (nolock) WHERE ParentUserId=@userid AND StandingPosition='Left')
+
+SET @ruserid=(SELECT userid FROM UserDetail WITH (nolock) WHERE ParentUserId=@userid AND StandingPosition='Right')
+
+
+; WITH MyCTE
+AS ( SELECT id,userid, parentuserid,0 AS userlevel,standingposition,IsDummyData,sponserid
+FROM userdetail with (nolock) 
+WHERE UserId =@luserid
+UNION ALL
+SELECT UserDetail.id,userdetail.userid,  userdetail.parentuserid ,MyCTE.userlevel+1 ,userdetail.standingposition,userdetail.IsDummyData,userdetail.SponserId
+FROM userdetail with (nolock) 
+INNER JOIN MyCTE ON userdetail.parentuserid = MyCTE.userid
+WHERE userdetail.userid !=@luserid )
+SELECT @LDirectCount=isnull(sum(CASE WHEN mycte.sponserid=@userid THEN 1 ELSE 0 END) ,0)
+FROM MyCTE left join usertopupdetail ud with (nolock)  on mycte.userid=ud.userid 
+LEFT JOIN planmaster pm WITH (nolock) ON ud.PlanId=pm.PlanId
+WHERE  ud.UserId IS NOT NULL AND   convert(DATE,ud.MentionDate)<=convert(DATE,@closingdate) AND isnull(mycte.IsDummyData,'0')='0'
+AND pm.CalculationAmount>=@planamount   AND  convert(DATE,ud.MentionDate)<=convert(DATE,dateadd(day,7,@topupdate))
+option (maxrecursion 0)
+
+
+
+
+
+; WITH MyCTE
+AS ( SELECT id,userid, parentuserid,0 AS userlevel,standingposition,IsDummyData,sponserid
+FROM userdetail with (nolock) 
+WHERE UserId =@ruserid
+UNION ALL
+SELECT UserDetail.id,userdetail.userid,  userdetail.parentuserid ,MyCTE.userlevel+1 ,userdetail.standingposition,userdetail.IsDummyData,userdetail.SponserId
+FROM userdetail with (nolock) 
+INNER JOIN MyCTE ON userdetail.parentuserid = MyCTE.userid
+WHERE userdetail.userid !=@ruserid )
+SELECT @RDirectCount=isnull(sum(CASE WHEN mycte.sponserid=@userid THEN 1 ELSE 0 END) ,0)
+FROM MyCTE left join usertopupdetail ud with (nolock)  on mycte.userid=ud.userid 
+LEFT JOIN planmaster pm WITH (nolock) ON ud.PlanId=pm.PlanId
+WHERE  ud.UserId IS NOT NULL AND   convert(DATE,ud.MentionDate)<=convert(DATE,@closingdate) AND isnull(mycte.IsDummyData,'0')='0'
+AND pm.CalculationAmount>=@planamount   AND  convert(DATE,ud.MentionDate)<=convert(DATE,dateadd(day,7,@topupdate))
+option (maxrecursion 0)
+
+
+ IF(@LDirectCount>0 AND @RDirectCount>0)
+begin
+DECLARE @directcount INT
+
+SET @directcount=@LDirectCount+@RDirectCount
+
+IF(@directcount>=3)
+BEGIN
+
+IF(NOT EXISTS (SELECT id FROM PrincipalCashbackDetail WITH (nolock) where userid=@userid))
+BEGIN
+declare @transactionid int
+set @transactionid = convert(VARCHAR, cast((900000000* Rand() + 100000000) as int ))
+
+DECLARE @tds DECIMAL(18,2),@FinalAmount DECIMAL(18,2),@AdminCharge DECIMAL(18,2),@tdspercent DECIMAL(18,2)
+DECLARE @PanNumber NVARCHAR(100),@ActiveStatus NVARCHAR(10)
+
+
+
+--SET @tds=(@roiamount*5)/100
+SET @tds=0
+--SET @admincharge=(@roiamount*5)/100
+SET @admincharge=0
+SET @finalamount=@planamount-(@tds+@AdminCharge)
+
+INSERT INTO PrincipalCashbackDetail (ClosingDate, UserId,  Amount, TRANSACTIONId, MentionBy, MentionDate, TDS, FinalAmount, AdminDeduction)
+VALUES (@closingdate, @userid,  @planamount, @transactionid, @mentionby, getdate(), @tds, @finalamount, @admincharge)
+--=============================MWallet============================
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,@planamount,0,@userid, 'Principal Cashback','Principal Cashback ','admin', 
+getdate(),'MWallet')
+/*INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@tds/2,@userid,'TDS','TDS on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'MWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@admincharge/2,@userid,'Admin Charge','Admin Charge on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'MWallet')*/
+UPDATE UserDetail SET balanceamount =(isnull(balanceamount,0)+@finalamount),PrincpalCashbackStatus='1' WHERE UserId=@userid
+--=============================MWallet============================
+
+
+end
+ 
+end
+ END 
+ FETCH NEXT FROM cur_roi1 INTO @userid,@planid,@topupdate,@planamount
+ END
+END
+CLOSE cur_roi1
+DEALLOCATE cur_roi1
+SET NOCOUNT OFF 
+
+
+
+
+
+
+
+
+SELECT 't'
+INSERT INTO PrincipalCashbackDateDetail(ClosingDate,MentionBy,Mentiondate)
+VALUES (@ClosingDate,@mentionby,getdate())
+
+END
+ELSE
+BEGIN
+SELECT 'f'
+END 
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+   INSERT INTO ErrorLog(procedurename,errormessage,entrydate,errorline) VALUES ('generateprincipalcashback',error_message(),getdate(),error_line())
+
+       
+END CATCH;
+GO
+

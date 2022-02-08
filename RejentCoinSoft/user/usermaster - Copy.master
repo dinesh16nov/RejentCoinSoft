@@ -1,0 +1,659 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="usermaster - Copy.master.cs" Inherits="admin_MasterPage" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+   <meta charset="utf-8" />
+    <title>Dashboard | Rejent Coin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/logo-sm.png">
+
+    <!-- plugin css -->
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+
+    <!-- Bootstrap Css -->
+    <link href="assets/css/bootstrap.min.css"  rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="assets/css/app.min.css"  rel="stylesheet" type="text/css" />
+
+    <style>
+        .row {
+            padding-bottom: 5px;
+            padding-top: 5px;
+        }
+    </style>
+    <style>
+        .active2 {
+            background: #1F1E29 none repeat scroll 0% 0% !important;
+            color: #FFF !important;
+        }
+
+        .GridPager a, .GridPager span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .GridPager a {
+            transition: all 0.3s ease-out 0s;
+        }
+
+            .GridPager a:hover {
+                background-color: #EEEEEE;
+            }
+
+        .GridPager span {
+            color: white;
+            z-index: 3;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+    </style>
+    <style>
+        body {
+        }
+
+            body .modal2 {
+                position: fixed;
+                z-index: 99999;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                background-color: white;
+                filter: alpha(opacity=60);
+                opacity: 0.6;
+                -moz-opacity: 0.8;
+                clear: both;
+                left: 0px;
+            }
+
+            body .center2 {
+                z-index: 100000;
+                margin: 200px auto;
+                padding: 10px;
+                width: 200px;
+                background-color: White;
+                border-radius: 10px;
+                filter: alpha(opacity=100);
+                opacity: 1;
+                -moz-opacity: 1;
+            }
+
+                body .center2 img {
+                    height: 150px;
+                    width: 200px;
+                }
+
+        .WrappedText {
+            word-break: break-all;
+            word-wrap: break-word;
+            width: 250px;
+        }
+    </style>
+    <script type="text/javascript">
+        function confirm_click() {
+            return confirm("Are you sure ?");
+        }
+
+    </script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body  class="page-header-fixed " onload="startTime()">
+
+    <form id="form1" runat="server">
+
+          <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        <header id="page-topbar">
+            <div class="navbar-header">
+                <div class="d-flex">
+
+                       <!-- LOGO -->
+                 <div class="navbar-brand-box">
+                    <a href="Dashboard.aspx" class="logo logo-dark">
+                        <span class="logo-sm">
+                            <img src="assets/images/logo.png" alt="" height="30">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="assets/images/logo.png" alt="" height="30">
+                        </span>
+                    </a>
+
+                    <a href="Dashboard.aspx" class="logo logo-light">
+                        <span class="logo-sm">
+                            <img src="assets/images/logo.png" alt="" height="30">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="assets/images/logo.png" alt="" height="30">
+                        </span>
+                    </a>
+                </div>
+
+                    <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+
+
+          
+                </div>
+
+                 <!-- Search input -->
+                
+
+                <div class="d-flex">
+           
+                    <div class="dropdown d-inline-block">
+                        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle header-profile-user" src="assets/images/default.png"
+                                alt="image">
+                            <span class="d-none d-xl-inline-block ms-1"><asp:Label ID="lbluseridmaster2" runat="server" Text="Label"></asp:Label></span>
+                            <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <!-- item-->
+                             <a class="dropdown-item" href="CHangePassword.aspx"><i class="mdi mdi-lock-open-outline font-size-16 align-middle me-1"></i> Change Password</a>
+                         
+                            <a class="dropdown-item text-danger" href="logout.aspx"><i class="mdi mdi-power font-size-16 align-middle me-1 text-danger"></i> Logout</a>
+                        </div>
+                    </div>
+
+                   
+            
+                </div>
+            </div>
+        </header>
+
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="vertical-menu">
+
+            <div data-simplebar class="h-100">
+
+
+                <div class="user-sidebar text-center">
+                    <div class="dropdown">
+                        <div class="user-img">
+                            <img src="assets/images/default.png" alt="" class="rounded-circle">
+                            <span class="avatar-online bg-success"></span>
+                        </div>
+                        <div class="user-info">
+                            <h5 class="mt-3 font-size-16 text-white"><asp:Label ID="lbluseridmaster" runat="server" Text="Label"></asp:Label></h5>
+                            <span class="font-size-13 text-white-50">User</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--- Sidemenu -->
+                <div id="sidebar-menu">
+                    <!-- Left Menu Start -->
+                    <ul class="metismenu list-unstyled"  id="side-menu">
+                        <li class="menu-title">Menu</li>
+
+                        <li>
+                            <a href="Dashboard.aspx" class="waves-effect">
+                                <i class="dripicons-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                          <li>
+                            <a href="UserEdit.aspx" class="waves-effect">
+                                <i class="fa fa-pencil"></i>
+                                <span>Edit Profile</span>
+                            </a>
+                        </li>
+                    
+
+                     
+
+                       
+                         
+                        <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-user"></i>
+							<span class="nav-text">User Management</span>
+						</a>
+                       <ul class="sub-menu" >
+                           <li class="">
+                                            <a href="UserAdd.aspx"  class="slide-item">
+                                                <span >Add User</span>
+                                            </a>
+                                        </li>
+                                       
+                                        <li class=" ">
+                                            <a href="DownlineReport.aspx"  class="slide-item">
+                                                <span >Downline Report</span>
+                                            </a>
+                                        </li>
+                                          <li class=" ">
+                                            <a href="DirectDownlineReport.aspx"  class="slide-item">
+                                                <span >Direct Downline Report</span>
+                                            </a>
+                                        </li>
+                                        
+                                         <%--  <li class=" ">
+                                            <a href="UserTopup.aspx"  class="slide-item">
+                                                <span >User Topup</span>
+                                            </a>
+                                        </li>
+                                           <li class=" ">
+                                            <a href="UserTopupReport.aspx"  class="slide-item">
+                                                <span >User Topup Report</span>
+                                            </a>
+                                        </li>--%>
+                              
+                                          <li class=" ">
+                                            <a href="BinaryReport.aspx"  class="slide-item">
+                                                <span >Binary Report</span>
+                                            </a>
+                                        </li>
+                                        <%-- <li class=" ">
+                                            <a href="AccountDetailEditRequestReport.aspx"  class="slide-item">
+                                                <span >Account Detail Edit Request</span>
+                                            </a>
+                                        </li>--%>
+                                <li class=" ">
+                                            <a href="BTCWalletAddressAdd.aspx"  class="slide-item">
+                                                <span >Add Wallet Address</span>
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+				
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-chart-bar"></i>
+							<span class="nav-text">Accounts</span>
+						</a>
+                       <ul class="sub-menu" >
+                            <li class=" ">
+                                            <a href="DirectIncomeReport.aspx"  class="slide-item">
+                                              
+                                                <span >Direct Income Report</span>
+                                               
+                                            </a>
+                                        </li>
+                                        <li class=" ">
+                                            <a href="LevelIncomeReport.aspx"  class="slide-item">
+                                              
+                                                <span >Level Income Report</span>
+                                               
+                                            </a>
+                                        </li>
+                              <li class=" ">
+                                            <a href="ROIReport.aspx"  class="slide-item">
+                                              
+                                                <span >ROI Report</span>
+                                               
+                                            </a>
+                                        </li>
+                              <li class=" ">
+                                            <a href="RewardReport.aspx"  class="slide-item">
+                                              
+                                                <span >Reward Report</span>
+                                               
+                                            </a>
+                                        </li>
+                             
+                                         <li class=" ">
+                                            <a href="TransactionReport.aspx"  class="slide-item">
+                                              
+                                                <span >Transaction Report(MWallet)</span>
+                                               
+                                            </a>
+                                        </li>
+                                         <li class=" ">
+                                            <a href="TransactionReportEWallet.aspx"  class="slide-item">
+                                              
+                                                <span >Transaction Report(EWallet)</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+
+                     <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-money-check"></i>
+							<span class="nav-text">Wallet Transfer</span>
+						</a>
+                       <ul class="sub-menu" >
+                          
+                                          <li class=" ">
+                                            <a href="MWalletToEWallet.aspx" class="slide-item">
+                                              
+                                                Income Wallet To Rejent Coin Wallet
+                                               
+                                            </a>
+                                        </li>
+                                              <li class=" ">
+                                            <a href="WalletTransfer.aspx" class="slide-item">
+                                              
+                                                <span class="">Rejent Coin Wallet To Rejent Coin Wallet</span>
+                                               
+                                            </a>
+                                        </li>
+                                           <li class=" ">
+                                            <a href="WalletTransferReport.aspx" class="slide-item">
+                                              
+                                                <span class="">Rejent Coin Wallet Trasnfer Report</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+
+
+                  <%--  <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="flaticon-053-heart"></i>
+							<span class="nav-text">Fund Request</span>
+						</a>
+                       <ul class="sub-menu" >
+                         <li class=" ">
+                                            <a href="FundRequestAdd.aspx"  class="slide-item">
+                                              
+                                                <span >Add Fund Reuqest</span>
+                                               
+                                            </a>
+                                        </li>
+                                <li class=" ">
+                                            <a href="FundRequestReport.aspx"  class="slide-item">
+                                              
+                                                <span >Fund Reuqest Report</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>--%>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-heart"></i>
+							<span class="nav-text">Staking</span>
+						</a>
+                       <ul class="sub-menu" >
+                         <li class=" ">
+                                            <a href="StackingAdd.aspx"  class="slide-item">
+                                              
+                                                <span >Add Staking</span>
+                                               
+                                            </a>
+                                        </li>
+                                <li class=" ">
+                                            <a href="StackingReport.aspx"  class="slide-item">
+                                              
+                                                <span >Staking Report</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+                      <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-money-bill"></i>
+							<span class="nav-text">Fund Request</span>
+						</a>
+                       <ul class="sub-menu" >
+                         <li class=" ">
+                                            <a href="FundRequestAdd.aspx"  class="slide-item">
+                                              
+                                                <span >Add Fund Reuqest</span>
+                                               
+                                            </a>
+                                        </li>
+							 <li class=" ">
+                                            <a href="FundRequestReport.aspx"  class="slide-item">
+                                              
+                                                <span >Fund Reuqest Report</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-dollar-sign"></i>
+							<span class="nav-text">Withdrawal Request</span>
+						</a>
+                       <ul class="sub-menu" >
+                         <li class=" ">
+                                            <a href="WithdrawlRequstAdd.aspx"  class="slide-item">
+                                              
+                                                <span >Add Withdrawal Reuqest</span>
+                                               
+                                            </a>
+                                        </li>
+							 <li class=" ">
+                                            <a href="WithdrawlRequestReport.aspx"  class="slide-item">
+                                              
+                                                <span >Withdrawal Reuqest Report</span>
+                                               
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+                    
+                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+							<i class="fa fa-inbox"></i>
+							<span class="nav-text">Support</span>
+						</a>
+                       <ul class="sub-menu" >
+                       <li class=" ">
+                                            <a href="NewMessage.aspx"  class="slide-item">
+                                                <span >New Message</span>
+                                            </a>
+                                        </li>
+                                        <li class=" ">
+                                            <a href="Inbox.aspx"  class="slide-item">
+                                                <span >Inbox</span>
+                                            </a>
+                                        </li>
+                                        <li class=" ">
+                                            <a href="Sentbox.aspx"  class="slide-item">
+                                                <span >Sentbox</span>
+                                            </a>
+                                        </li>
+                        </ul>
+                    </li>
+                      <li><a href="CHangePassword.aspx" class="ai-icon" aria-expanded="false">
+							<i class="fa fa-cogs"></i>
+							<span class="nav-text">Change Password</span>
+						</a>
+					</li>
+                    <li><a class="ai-icon" href="logout.aspx" aria-expanded="false">
+							<i class="fa fa-sign-out-alt"></i>
+							<span class="nav-text">Logout</span>
+						</a>
+                     
+                    </li>
+
+
+                        
+
+                    </ul>
+                </div>
+                <!-- Sidebar -->
+            </div>
+        </div>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="main-content">
+
+            <div class="page-content">
+
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <div class="container-fluid">
+                     <div class="row align-items-center">
+                         <div class="col-sm-6">
+                             <div class="page-title">
+                              <asp:ContentPlaceHolder ID="contentHeader" runat="server"></asp:ContentPlaceHolder>
+                             </div>
+                         </div>
+                         <div class="col-sm-6">
+                            <div class="float-end d-none d-sm-block">
+                                <span id="clocktime"  class="btn btn-success"></span>
+                            </div>
+                         </div>
+                     </div>
+                    </div>
+                 </div>
+                 <!-- end page title -->    
+
+
+                <div class="container-fluid">
+
+                    <div class="page-content-wrapper">
+
+
+                    <asp:ContentPlaceHolder ID="contentData" runat="server"></asp:ContentPlaceHolder>
+
+
+                    </div>
+
+
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row form-group">
+                        <div class="col-sm-6">
+                            <script>document.write(new Date().getFullYear())</script> © .
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-sm-end d-none d-sm-block">
+                                Crafted with <i class="mdi mdi-heart text-danger"></i> by 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+   
+
+
+           <script src="assets/libs/jquery/jquery.min.js"></script>
+    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- apexcharts -->
+    <%--<script src="assets/libs/apexcharts/apexcharts.min.js"></script>--%>
+
+    <!-- Plugins js-->
+    <script src="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
+
+    <script src="assets/js/pages/dashboard.init.js"></script>
+            <script type="text/javascript" src="assets/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+
+    <script src="assets/js/app.js"></script>
+
+        <script>
+            Sys.Application.add_load(LoadHandler);
+            function LoadHandler() {
+                $('.datepicker-here').datetimepicker({
+                    language: 'en',
+                    weekStart: 1,
+                    todayBtn: 1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    forceParse: 0,
+                    format: 'dd/mm/yyyy',
+                });
+            }
+        </script>
+        <script type="text/javascript">
+
+            $('.datepicker-here').datetimepicker({
+                language: 'en',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0,
+                format: 'dd/mm/yyyy',
+            });
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode > 31 && (charCode < 45 || charCode > 57)) {
+                    return false;
+                }
+                return true;
+            }
+            $(function () {
+
+                var url = window.location.pathname;
+                var pagename = url.substring(url.lastIndexOf('/') + 1, url.length);
+                //    alert(pagename);
+                $('#nav2 li').each(function (i) {
+
+                    if ($(this).find('a').attr('href') == pagename) {
+                        $(this).addClass('active');
+                        $(this).closest('ul').closest('li').addClass('active open');
+                    }
+
+                });
+
+            });
+        </script>
+        <link href="assets/js/toastr.css" rel="stylesheet" />
+        <script src="assets/js/toastr.js"></script>
+
+        <script>
+            function startTime() {
+                const today = new Date();
+                let h = today.getHours();
+                let m = today.getMinutes();
+                let s = today.getSeconds();
+
+                m = checkTime(m);
+                s = checkTime(s);
+
+
+
+
+                document.getElementById('clocktime').innerHTML = h + ":" + m + ":" + s;
+                setTimeout(startTime, 1000);
+            }
+
+            function checkTime(i) {
+                if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+                return i;
+            }
+
+
+
+</script>
+     <asp:ContentPlaceHolder ID="contentScript" runat="server">
+        </asp:ContentPlaceHolder>
+
+    </form>
+</body>
+</html>

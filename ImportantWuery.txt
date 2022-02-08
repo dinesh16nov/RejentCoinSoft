@@ -1,0 +1,433 @@
+
+SELECT * FROM TransactionDetail WHERE TransactionId IN (SELECT TransactionId FROM ROIDetail)
+
+DELETE FROM TransactionDetail WHERE TransactionId IN (SELECT TransactionId FROM ROIDetail)
+
+TRUNCATE TABLE ROIDetail
+
+
+
+
+UPDATE ud SET ud.balanceamount=(SELECT isnull(sum(cd.cramount),0)-isnull(sum(cd.dramount),0)
+FROM transactiondetail cd WHERE cd.UserId=ud.userid  
+) FROM userdetail ud
+
+
+SELECT sum(cramount)-sum(dramount),td.userid,ud.ewalletbalance FROM TransactionDetail td WITH (nolock)
+LEFT JOIN userdetail ud ON ud.userid=td.UserID 
+WHERE td.WalletType='EWallet'
+GROUP BY td.UserID,ud.ewalletbalance 
+having ud.ewalletbalance!=sum(cramount)-sum(dramount) 
+
+UPDATE ud SET ud.ewalletbalance=(SELECT sum(cramount)-sum(dramount) FROM TransactionDetail td  WHERE ud.userid=td.UserID and td.WalletType='EWallet' )
+FROM UserDetail ud
+
+
+
+
+
+SELECT sum(cramount)-sum(dramount),td.userid,ud.balanceamount FROM TransactionDetail td WITH (nolock)
+LEFT JOIN userdetail ud ON ud.userid=td.UserID 
+WHERE td.WalletType='MWallet'
+GROUP BY td.UserID,ud.balanceamount 
+having ud.balanceamount!=sum(cramount)-sum(dramount) 
+
+UPDATE ud SET ud.balanceamount=(SELECT sum(cramount)-sum(dramount) FROM TransactionDetail td  WHERE ud.userid=td.UserID and td.WalletType='MWallet' )
+FROM UserDetail ud
+
+
+
+===================direct roi achievement=============================
+
+DECLARE @ClosingDate DATETIME
+SET @closingdate ='06/25/2020'
+
+
+BEGIN TRANSACTION;
+
+BEGIN TRY
+
+IF( DATENAME(dw,@ClosingDate)!='Friday' and DATENAME(dw,@ClosingDate)!='Saturday')
+BEGIN
+IF(NOT EXISTS(SELECT id FROM holidaymaster WITH (nolock) WHERE convert(DATE,holidaydate)=convert(DATE,@closingdate)))
+BEGIN
+DECLARE @MentionBy NVARCHAR(100)
+SET @MentionBy ='adminmanual'
+
+
+
+--==================================roi achievement start==============================
+
+SET NOCOUNT ON
+DECLARE @userid INT,@planid INT,@topupdate DATETIME
+DECLARE cur_roi1 CURSOR
+STATIC FOR 
+SELECT  ud.userid,em.PlanId,ud.MentionDate FROM UserTopupDetail ud WITH (nolock) LEFT JOIN epinmaster em WITH (nolock) ON ud.UserId=em.UsedUserId LEFT JOIN userdetail ud2 WITH (nolock) ON ud2.UserId=ud.UserId WHERE convert(DATE,ud.mentiondate)<=convert(DATE,@closingdate)   AND isnull(ud2.IsDummyData,'0')='0' and em.PlanId IN (1,12,13,14) AND ud.UserId NOT IN (SELECT userid FROM DirectROIAchievementDetail) 
+union
+SELECT  ud.userid,em.PlanId,ud.MentionDate FROM usertopupdetailhistory ud WITH (nolock) LEFT JOIN epinmaster em WITH (nolock) ON ud.UserId=em.UsedUserId LEFT JOIN userdetail ud2 WITH (nolock) ON ud2.UserId=ud.UserId WHERE convert(DATE,ud.mentiondate)<=convert(DATE,@closingdate)   AND isnull(ud2.IsDummyData,'0')='0' and em.PlanId IN (1,12,13,14)  AND ud.UserId NOT IN (SELECT userid FROM DirectROIAchievementDetail) 
+ 
+
+OPEN cur_roi1
+ BEGIN 
+ FETCH NEXT FROM cur_roi1 INTO @userid,@planid,@topupdate
+ WHILE @@Fetch_status = 0
+ BEGIN
+ 
+DECLARE @directcount INT
+
+SELECT @directcount =count(ud.userid) FROM userdetail ud WITH (nolock) LEFT JOIN usertopupdetail ut WITH (nolock) ON ud.UserId=ut.UserId LEFT JOIN epinmaster em WITH (nolock) ON ut.EPinNo=em.EPinNo WHERE ud.sponserid=@userid AND ud.ActiveStatus='1' AND em.PlanId =1 AND convert(DATE,ut.MentionDate)<=convert(DATE,@closingdate)
+
+DECLARE  @maxlevel INT,@currentlevelno INT
+SET @maxlevel=isnull((SELECT max(levelno) FROM DirectROIAchievementDetail WITH (nolock) WHERE userid=@userid),0)
+
+SET @currentlevelno=isnull((SELECT TOP 1 levelno FROM DirectROILevelMaster WITH (nolock) WHERE levelno>@maxlevel AND target<=@directcount ORDER BY levelno desc),0)
+IF(@currentlevelno>0)
+BEGIN
+IF(NOT EXISTS(SELECT UserId FROM DirectROIAchievementDetail WITH (nolock) WHERE UserId=@userid AND levelno=@currentlevelno))
+BEGIN
+INSERT INTO DirectROIAchievementDetail (ClosingDate, UserId, LevelNo, DirectCount, MentionBy, MentionDate)
+SELECT @closingdate,@userid,levelno,@directcount,@mentionby, getdate() 
+FROM DirectROILevelMaster WITH (nolock) WHERE levelno>@maxlevel AND target<=@directcount ORDER BY levelno 
+
+--VALUES (@closingdate, @userid, @currentlevelno, @directcount, @mentionby, getdate())
+END 
+
+END 
+
+ 
+ FETCH NEXT FROM cur_roi1 INTO @userid,@planid,@topupdate
+ END
+END
+CLOSE cur_roi1
+DEALLOCATE cur_roi1
+SET NOCOUNT OFF 
+
+
+
+
+END
+
+END
+
+
+
+SELECT 't'
+
+
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+ 
+       
+END CATCH;
+GO
+
+
+
+
+======================= direct roi income=======================
+
+
+
+DECLARE @ClosingDate DATETIME
+SET @closingdate ='06/25/2020'
+
+
+
+BEGIN TRANSACTION;
+
+BEGIN TRY
+
+IF( DATENAME(dw,@ClosingDate)!='Friday' and DATENAME(dw,@ClosingDate)!='Saturday')
+BEGIN
+IF(NOT EXISTS(SELECT id FROM holidaymaster WITH (nolock) WHERE convert(DATE,holidaydate)=convert(DATE,@closingdate)))
+BEGIN
+DECLARE @MentionBy NVARCHAR(100)
+SET @MentionBy ='adminmanual'
+
+
+
+
+--==================================roi income start===================================
+
+
+SET NOCOUNT ON
+DECLARE @userid INT,@planid INT,@topupdate DATETIME
+DECLARE @levelno INT
+DECLARE cur_roi CURSOR
+STATIC FOR 
+SELECT  userid,levelno AS levelno FROM DirectROIAchievementDetail WITH (nolock) WHERE MentionBy='adminmanual'
+OPEN cur_roi
+ BEGIN 
+ FETCH NEXT FROM cur_roi INTO @userid,@levelno
+ WHILE @@Fetch_status = 0
+ BEGIN
+ 
+
+--PRINT @userid
+
+
+DECLARE @roiamount DECIMAL(18,2),@ROIDays INT,@ROICount INT,@ROIPercent DECIMAL(18,2),@planamount DECIMAL(18,2)
+SELECT @ROIDays=days,@ROIPercent=income FROM DirectROILevelMaster WITH (nolock) WHERE levelno=@levelno
+
+SET @ROIAmount=@ROIPercent
+
+DECLARE @ROIAchievementId INT
+SELECT @ROIAchievementId=id FROM DirectROIAchievementDetail WITH (nolock) WHERE UserId=@userid AND LevelNo=@levelno
+SELECT @ROICount=count(Id  ) FROM Directroidetail WITH (nolock) WHERE ROIAchievementId=@ROIAchievementId
+
+IF(@ROICount<@ROIDays)
+BEGIN
+
+declare @transactionid int
+set @transactionid = convert(VARCHAR, cast((900000000* Rand() + 100000000) as int ))
+
+DECLARE @tds DECIMAL(18,2),@FinalAmount DECIMAL(18,2),@AdminCharge DECIMAL(18,2),@tdspercent DECIMAL(18,2)
+DECLARE @PanNumber NVARCHAR(100),@ActiveStatus NVARCHAR(10)
+
+
+
+SET @tds=(@roiamount*5)/100
+--SET @tds=0
+SET @admincharge=(@roiamount*5)/100
+--SET @admincharge=0
+SET @finalamount=@roiamount-(@tds+@AdminCharge)
+
+INSERT INTO DirectROIDetail (ClosingDate, UserId, ROIAchievementId, Amount, TRANSACTIONId, MentionBy, MentionDate, TDS, FinalAmount, AdminDeduction)
+VALUES (@closingdate, @userid, @roiachievementid, @ROIAmount, @transactionid, @mentionby, getdate(), @tds, @finalamount, @admincharge)
+--=============================MWallet============================
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,@roiamount/2,0,@userid, 'DirectROIIncome','Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'MWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@tds/2,@userid,'TDS','TDS on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'MWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@admincharge/2,@userid,'Admin Charge','Admin Charge on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'MWallet')
+UPDATE UserDetail SET balanceamount =(isnull(balanceamount,0)+@finalamount/2) WHERE UserId=@userid
+--=============================MWallet============================
+--=============================MWallet============================
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,@roiamount/2,0,@userid, 'DirectROIIncome','Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'EWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@tds/2,@userid,'TDS','TDS on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'EWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@admincharge/2,@userid,'Admin Charge','Admin Charge on Direct ROI Income For date '+convert(NVARCHAR,@closingdate,103)+' of level '+convert(NVARCHAR,@levelno),'admin', 
+getdate(),'EWallet')
+UPDATE UserDetail SET ewalletbalance =(isnull(ewalletbalance,0)+@finalamount/2) WHERE UserId=@userid
+--=============================MWallet============================
+
+
+
+end
+ 
+ FETCH NEXT FROM cur_roi INTO @userid,@levelno
+ END
+END
+CLOSE cur_roi
+DEALLOCATE cur_roi
+SET NOCOUNT OFF 
+
+
+
+END
+
+END
+
+
+
+SELECT 't'
+
+
+COMMIT TRANSACTION;
+
+ END TRY
+BEGIN CATCH
+ ROLLBACK TRANSACTION;
+   INSERT INTO ErrorLog(procedurename,errormessage,entrydate,errorline) VALUES ('generatedirectroi',error_message(),getdate(),error_line())
+
+       
+END CATCH;
+GO
+
+
+==================================== booster query===================================
+
+DECLARE @userid NVARCHAR(100),@closingdate DATETIME,@planid INT, @isbooster NVARCHAR(100)
+SET @userid='380479'
+SELECT @isbooster=isnull(isbooster,'0') FROM userdetail WHERE UserId=@userid
+SELECT @planid =planid FROM  usertopupdetail WHERE UserId=@userid
+
+DECLARE @roiamount DECIMAL(18,2),@ROIDays INT,@ROICount INT,@ROIPercent DECIMAL(18,2),@planamount DECIMAL(18,2)
+SELECT @ROIDays=roidays,@ROIPercent=roiamount,@planamount=calculationamount  FROM planmaster WHERE PlanId=@planid
+
+
+
+SET @closingdate=dateadd(day,-1,getdate())
+
+DECLARE @LUserId INT,@RUserId INT,@LDirectCount INT,@RDirectCount INT
+
+SET @luserid=(SELECT userid FROM UserDetail WITH (nolock) WHERE ParentUserId=@userid AND StandingPosition='Left')
+
+SET @ruserid=(SELECT userid FROM UserDetail WITH (nolock) WHERE ParentUserId=@userid AND StandingPosition='Right')
+
+
+; WITH MyCTE
+AS ( SELECT id,userid, parentuserid,0 AS userlevel,standingposition,IsDummyData,sponserid
+FROM userdetail with (nolock) 
+WHERE UserId =@luserid
+UNION ALL
+SELECT UserDetail.id,userdetail.userid,  userdetail.parentuserid ,MyCTE.userlevel+1 ,userdetail.standingposition,userdetail.IsDummyData,userdetail.SponserId
+FROM userdetail with (nolock) 
+INNER JOIN MyCTE ON userdetail.parentuserid = MyCTE.userid
+WHERE userdetail.userid !=@luserid )
+SELECT  @LDirectCount=isnull(sum(CASE WHEN mycte.sponserid=@userid AND pm.CappingAmount>=@planamount THEN 1 ELSE 0 END) ,0) 
+FROM MyCTE left join usertopupdetail ud with (nolock)  on mycte.userid=ud.userid 
+LEFT JOIN planmaster pm WITH (nolock) ON ud.PlanId=pm.PlanId
+WHERE  ud.UserId IS NOT NULL AND   convert(DATE,ud.MentionDate)<=convert(DATE,@closingdate) AND isnull(mycte.IsDummyData,'0')='0'
+option (maxrecursion 0)
+
+
+
+
+
+
+; WITH MyCTE
+AS ( SELECT id,userid, parentuserid,0 AS userlevel,standingposition,IsDummyData,sponserid
+FROM userdetail with (nolock) 
+WHERE UserId =@ruserid
+UNION ALL
+SELECT UserDetail.id,userdetail.userid,  userdetail.parentuserid ,MyCTE.userlevel+1 ,userdetail.standingposition,userdetail.IsDummyData,userdetail.SponserId
+FROM userdetail with (nolock) 
+INNER JOIN MyCTE ON userdetail.parentuserid = MyCTE.userid
+WHERE userdetail.userid !=@ruserid )
+SELECT @RDirectCount=isnull(sum(CASE WHEN mycte.sponserid=@userid AND pm.CalculationAmount>=@planamount THEN 1 ELSE 0 END) ,0)
+FROM MyCTE left join usertopupdetail ud with (nolock)  on mycte.userid=ud.userid 
+LEFT JOIN planmaster pm WITH (nolock) ON ud.PlanId=pm.PlanId
+WHERE  ud.UserId IS NOT NULL   and convert(DATE,ud.MentionDate)<=convert(DATE,@closingdate)  AND isnull(mycte.IsDummyData,'0')='0'
+option (maxrecursion 0)
+
+SELECT @LDirectCount,@RDirectCount
+IF(@LDirectCount>=1 AND @RDirectCount>=1)
+BEGIN
+UPDATE userdetail SET IsBooster='1' WHERE userid=@userid
+SET @isbooster='1'
+END 
+
+
+IF(@isbooster='1')
+BEGIN
+
+
+
+SET @ROIAmount=@ROIPercent
+
+DECLARE @boostercount INT
+SELECT @boostercount=count(Id  ) FROM roidetail WITH (nolock) WHERE userid=@userid AND ROIType='Booster'
+
+IF(@boostercount<100)
+BEGIN
+
+
+
+declare @transactionid int
+set @transactionid = convert(VARCHAR, cast((900000000* Rand() + 100000000) as int ))
+
+DECLARE @tds DECIMAL(18,2),@FinalAmount DECIMAL(18,2),@AdminCharge DECIMAL(18,2),@tdspercent DECIMAL(18,2)
+DECLARE @PanNumber NVARCHAR(100),@ActiveStatus NVARCHAR(10)
+/*SELECT @PanNumber=isnull(pannumber,''),@ActiveStatus=activestatus FROM userdetail WITH (nolock) WHERE UserId=@userid
+IF(@PanNumber='')
+BEGIN
+SET @tdspercent=20
+END 
+ELSE
+BEGIN
+SET @tdspercent=5
+end*/
+
+
+--SET @tds=(@roiamount*5)/100
+SET @tds=0
+--SET @admincharge=(@roiamount*5)/100
+SET @admincharge=0
+SET @finalamount=@roiamount-(@tds+@AdminCharge)
+
+
+INSERT INTO roidetail (ClosingDate ,UserId ,Amount ,ROIType,TRANSACTIONId ,MentionBy ,MentionDate,tds,finalamount,admindeduction)
+VALUES (@closingdate,@userid,@roiamount,'Booster',@TRANSACTIONId,'admin',getdate(),@tds,@finalamount,@AdminCharge)
+
+--==========================M Wallet==========================
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,@roiamount,0,@userid, 'BoosterIncome','Booster Income For date '+convert(NVARCHAR,@closingdate,103),'admin', 
+getdate(),'MWallet')
+/*INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@tds/2,@userid,'TDS','TDS on ROI Income For date '+convert(NVARCHAR,@closingdate,103),'admin', 
+getdate(),'MWallet')
+INSERT INTO TransactionDetail (TransactionId,CrAmount,DrAmount,userid,TransactionType,Remark,MentionBy, 
+MentionDate,wallettype)
+VALUES (@Transactionid,0,@admincharge/2,@userid,'Admin Charge','Admin Charge on ROI Income For date '+convert(NVARCHAR,@closingdate,103),'admin', 
+getdate(),'MWallet')*/
+UPDATE UserDetail SET balanceamount =(isnull(balanceamount,0)+@finalamount) WHERE UserId=@userid
+
+END
+
+end
+ 
+
+--=================== invalid transaction charge on oin refund===================
+
+
+
+SET NOCOUNT ON
+DECLARE @userid INT,@transactionid int,@amount DECIMAL(18,6)
+DECLARE cur_roi1 CURSOR
+STATIC FOR 
+SELECT (TransactionCharge/ ConversionRate)-TransactionCharge,Transactionid,userid FROM WithdrawlRequest WHERE Status='Rejected' AND WalletType='Coin'
+
+OPEN cur_roi1
+ BEGIN 
+ FETCH NEXT FROM cur_roi1 INTO @amount,@transactionid,@userid
+ WHILE @@Fetch_status = 0
+ BEGIN
+ 
+ 
+ --SELECT @amount,@transactionid,@userid
+
+
+DECLARE @OpeningBalance DECIMAL(18,6),@ClosingBalance DECIMAL(18,6)
+SELECT @OpeningBalance=coinbalance FROM UserDetail WITH (nolock) WHERE UserId=@userid
+SET @ClosingBalance= isnull(@OpeningBalance,0)-@amount
+
+
+INSERT INTO QauereCoinTransactionDetail (TransactionId,userid,CrAmount,DrAmount,TransactionType,Remark,MentionBy, 
+mentiondate,OpeningBalance,ClosingBalance)
+VALUES (@TransactionId,@userid,0,@amount,'TransactionCharge','Reversal of Invalid Transaction Charge Refund on Withdrawal By Admin','-6', 
+[dbo].[getIndianDate](),isnull(@OpeningBalance,0),isnull(@ClosingBalance,0))
+UPDATE UserDetail SET coinbalance=isnull(coinbalance,0)-@amount WHERE UserId=@userid
+
+
+
+ 
+ FETCH NEXT FROM cur_roi1 INTO @amount,@transactionid,@userid
+ END
+END
+CLOSE cur_roi1
+DEALLOCATE cur_roi1
+SET NOCOUNT OFF 
+
+
+
+
